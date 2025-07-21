@@ -13,30 +13,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.application.ui.theme.ApplicationTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.TextUnit
 //import androidx.compose.ui.unit.TextStyle
 //import androidx.compose.ui.unit.toDp
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.TextStyle
 
 
-class MainActivity : ComponentActivity() {
+class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -75,8 +68,8 @@ val pingFangFont=FontFamily(
 
 @Composable
 fun Screen(
-    name:String ?= null,
-    function:String ?= null,
+    name:String,
+    function:String?,
     modifier:Modifier=Modifier
 ) {
     Column(

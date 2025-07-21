@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-<<<<<<< HEAD
-    <style name="Theme.UIPractice" parent="android:Theme.Material.Light.NoActionBar" />
-=======
     <style name="Theme.Application" parent="android:Theme.Material.Light.NoActionBar" />
->>>>>>> 54e6154 (screenpreview)
 </resources>
