@@ -17,19 +17,15 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
-<<<<<<< HEAD
-}
 
-rootProject.name = "UI practice"
-include(":app")
- 
-=======
+//rootProject.name = "UI practice"
+//include(":app")
 
     versionCatalogs{
         create("libs")
     }
 }
 
+
 rootProject.name = "Application"
 include(":app")
->>>>>>> 54e6154 (screenpreview)
