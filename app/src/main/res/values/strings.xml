@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">UI practice</string>
+=======
+    <string name="app_name">Application</string>
+>>>>>>> 54e6154 (screenpreview)
 </resources>

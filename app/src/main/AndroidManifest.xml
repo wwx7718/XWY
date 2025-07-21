@@ -10,12 +10,20 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+<<<<<<< HEAD
         android:theme="@style/Theme.UIPractice">
+=======
+        android:theme="@style/Theme.Application">
+>>>>>>> 54e6154 (screenpreview)
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+<<<<<<< HEAD
             android:theme="@style/Theme.UIPractice">
+=======
+            android:theme="@style/Theme.Application">
+>>>>>>> 54e6154 (screenpreview)
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

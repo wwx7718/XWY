@@ -5,12 +5,21 @@ plugins {
 }
 
 android {
+<<<<<<< HEAD
     namespace = "com.example.uipractice"
     compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.uipractice"
         minSdk = 21
+=======
+    namespace = "com.example.application"
+    compileSdk = 36
+
+    defaultConfig {
+        applicationId = "com.example.application"
+        minSdk = 24
+>>>>>>> 54e6154 (screenpreview)
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -37,9 +46,12 @@ android {
     buildFeatures {
         compose = true
     }
+<<<<<<< HEAD
     composeOptions{
         kotlinCompilerExtensionVersion = "1.6.0"
     }
+=======
+>>>>>>> 54e6154 (screenpreview)
 }
 
 dependencies {
@@ -60,4 +72,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended)
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 54e6154 (screenpreview)
