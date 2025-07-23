@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -29,12 +30,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.graphics.painter.Painter
-import android.content.Context
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import coil.request.ImageRequest
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
+
 
 //import androidx.compose.foundation.layout.Arrangement
 
@@ -67,13 +77,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TopBar(
     name:String,
-    function:String?,
+    function:String,
     modifier:Modifier=Modifier
 ) {
+    val colors=MaterialTheme.colorScheme
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF1A1B1D))
+            .background(MaterialTheme.colorScheme.background)
         //.padding(vertical = 8.dp)
     )
     {
@@ -82,7 +93,7 @@ fun TopBar(
                 //.width(375.dp)
                 .fillMaxWidth()
                 .height(44.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (!function.isNullOrBlank()) {
@@ -121,61 +132,13 @@ fun TopBar(
                 tint = Color(0xFF808595)
             )
         }
-        Divider(
-            color=Color(0xFFE0E0E0),
+        HorizontalDivider(
+            color=MaterialTheme.colorScheme.outline.copy(alpha=0.3f),
             thickness=0.5.dp
         )
     }
 }
-        //Spacer(modifier = Modifier.height(213.dp))
 
-
-        //Row(
-            //modifier = Modifier
-                ////.width(375.dp)
-                //.fillMaxWidth()
-                //.height(44.dp)
-                //.background(Color(0xFF1A1B1D)),
-            //verticalAlignment = Alignment.CenterVertically
-        //) {
-            //if (!function.isNullOrBlank()) {
-                //Text(
-                    //text = name,
-                    ////modifier = Modifier.offset(x = 12.dp),
-                    //style = TextStyle(
-                        ////fontFamily = pingFangFont,
-                        //fontWeight = FontWeight.Medium,
-                        //fontSize = 17.sp,
-                        //lineHeight = 13.5.sp,
-                        //color = Color(0xFF808595)
-                    //)
-                //)
-            //}
-
-            //Spacer(modifier = Modifier.weight(1f))
-
-            //if (!function.isNullOrBlank()) {
-                //Text(
-                    //text = function,
-                    ////modifier = Modifier.offset(x=324.dp),
-                    //style = TextStyle(
-                        //fontFamily = pingFangFont,
-                        //fontWeight = FontWeight.Normal,
-                        //fontSize = 14.sp,
-                        //lineHeight = 23.sp,
-                        //color = Color(0xFF808595)
-                    //)
-                //)
-            //}
-            //Icon(
-                //imageVector = Icons.Filled.ChevronRight,
-                //contentDescription = "Chevron Right",
-                ////modifier=Modifier.offset(x=pxToDp(355.3f)),
-                //tint = Color(0xFF808595)
-            //)
-        //}
-    //}
-//}
 
 @Composable
 fun FunctionItem(
@@ -196,7 +159,7 @@ fun FunctionItem(
                 .width(60.dp)
                 .heightIn(min=60.dp)
                 .clickable{onClick()}
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
@@ -254,38 +217,19 @@ fun FunctionGrid(modifier: Modifier=Modifier){
         Pair("stockmarket", "次新股"),
         Pair("more", "更多"),
     )
-    Column(
+    LazyVerticalGrid(
+        //columns = GridCells.Adaptive(minSize=60.dp),
+        columns = GridCells.Fixed(5),
         modifier=Modifier
             .fillMaxWidth()
-            .background(Color.White),
-        verticalArrangement=Arrangement.spacedBy(19.dp)
+            .background(MaterialTheme.colorScheme.background),
+        horizontalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
     ){
-        for (row in 0 until 2){
-            Row(
-                modifier=Modifier
-                    .fillMaxWidth()
-                    .heightIn(min=60.dp)
-                    //.padding(horizontal=19.dp, vertical=43.dp)
-                //horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                for (col in 0 until 5){
-                    val index=row*5+col
-                    val item=labels[index]
-                    val imagePath=item.first
-                    val label=item.second
+        items(labels){(imagePath, label) ->
+            FunctionItem(imagePath = imagePath, label = label, onClick = {})
+        }
 
-                    Column(
-                        modifier=Modifier
-                            //.padding(horizontal=19.dp, vertical=43.dp),
-                            .weight(1f)
-                            .wrapContentHeight(),
-                        horizontalAlignment=Alignment.CenterHorizontally
-                    ) {
-                        FunctionItem(imagePath = imagePath, label = label, onClick = {})
-                    }
-                    }
-                }
-            }
         }
     }
 
@@ -304,89 +248,27 @@ fun Screen(modifier: Modifier=Modifier){
     }
 }
 
-@Composable
-fun DarkTopBar(
-    name:String,
-    function:String?,
-    modifier:Modifier=Modifier
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFF1A1B1D))
-            .padding(vertical = 8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                //.width(375.dp)
-                .fillMaxWidth()
-                .height(44.dp)
-                .background(Color(0xFF1A1B1D)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (!function.isNullOrBlank()) {
-                Text(
-                    text = name,
-                    modifier = Modifier.offset(x = 12.dp),
-                    style = TextStyle(
-                        //fontFamily = pingFangFont,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 17.sp,
-                        lineHeight = 13.5.sp,
-                        color = Color(0xFF808595)
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            if (!function.isNullOrBlank()) {
-                Text(
-                    text = function,
-                    //modifier = Modifier.offset(x=324.dp),
-                    style = TextStyle(
-                        //fontFamily = pingFangFont,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        lineHeight = 23.sp,
-                        color = Color(0xFF808595)
-                    )
-                )
-            }
-            Icon(
-                imageVector = Icons.Filled.ChevronRight,
-                contentDescription = "Chevron Right",
-                //modifier=Modifier.offset(x=pxToDp(355.3f)),
-                tint = Color(0xFF808595)
-            )
-        }
-        Divider(
-            color=Color(0xFFE0E0E0),
-            thickness=0.5.dp
-        )
-    }
-}
 
 @Composable
 fun TopBar2(
     LeftText:String,
     MiddleText:String,
     RightText:String,
-    function:String?,
+    function:String,
     modifier:Modifier=Modifier
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
-            .padding(vertical = 8.dp)
+            .background(MaterialTheme.colorScheme.background)
+            //.padding(vertical = 8.dp)
     ) {
         Row(
             modifier = Modifier
                 //.width(375.dp)
                 .fillMaxWidth()
                 .height(44.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (!function.isNullOrBlank()) {
@@ -398,12 +280,13 @@ fun TopBar2(
                         fontWeight = FontWeight.Medium,
                         fontSize = 17.sp,
                         lineHeight = 13.5.sp,
-                        color = Color(0xFF333333)
+                        color = Color(0xFF808595)
                     )
                 )
+                Spacer(modifier = Modifier.width(25.dp))
                 Text(
                     text = MiddleText,
-                    modifier = Modifier.offset(x = 105.dp),
+                    //modifier = Modifier.offset(x = 105.dp),
                     style = TextStyle(
                         //fontFamily = pingFangFont,
                         fontWeight = FontWeight.Medium,
@@ -412,9 +295,10 @@ fun TopBar2(
                         color = Color(0xFF808595)
                     )
                 )
+                Spacer(modifier = Modifier.width(25.dp))
                 Text(
                     text = RightText,
-                    modifier = Modifier.offset(x = 198.dp),
+                    //modifier = Modifier.offset(x = 198.dp),
                     style = TextStyle(
                         //fontFamily = pingFangFont,
                         fontWeight = FontWeight.Medium,
@@ -424,6 +308,16 @@ fun TopBar2(
                     )
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = function,
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    lineHeight = 23.sp,
+                    color = Color(0xFF808595)
+                )
+            )
             Icon(
                 imageVector = Icons.Filled.ChevronRight,
                 contentDescription = "Chevron Right",
@@ -431,10 +325,54 @@ fun TopBar2(
                 tint = Color(0xFF808595)
             )
         }
-        Divider(
-            color=Color(0xFFE0E0E0),
+        HorizontalDivider(
+            color=MaterialTheme.colorScheme.outline.copy(alpha=0.3f),
             thickness=0.5.dp
         )
+    }
+}
+
+@Composable
+fun Menu(){
+    val tabLabels = listOf("涨幅", "涨速", "主力净流入", "主力净流速", "5日涨幅", "20日涨幅")
+    var selectedTab by remember{mutableStateOf(tabLabels[0])}
+
+    MenuItem(
+        tabLabels=tabLabels,
+        selectedTab=selectedTab,
+        onTabSelected= {selectedTab=it}
+    )
+}
+
+@Composable
+fun MenuItem(
+    tabLabels: List<String>,
+    selectedTab: String,
+    onTabSelected:(String) -> Unit
+) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        items(tabLabels) { label ->
+            val isSelected = label == selectedTab
+            FilledTonalButton(
+                onClick = { onTabSelected(label) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isSelected) Color(0xFF508CEE) else Color(0xFFF5F7FB),
+                    contentColor = if (isSelected) Color(0xFFFFFFFF) else Color(0xFF808595)
+                ),
+                shape = RoundedCornerShape(3.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp)
+
+            ) {
+                Text(
+                    text = label,
+                    fontSize = 13.sp
+                )
+            }
+        }
     }
 }
 
@@ -467,17 +405,6 @@ fun ScreenPreview(){
 
 @Preview(showBackground = true)
 @Composable
-fun DarkTopBarPreview() {
-    MyApplicationTheme {
-        DarkTopBar(
-            name="数据中心",
-            function="更多"
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
 fun TopBar2Preview(){
     MyApplicationTheme{
         TopBar2(
@@ -486,5 +413,13 @@ fun TopBar2Preview(){
             RightText = "资金热力图",
             function = "更多"
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuPreview(){
+    MyApplicationTheme{
+        Menu()
     }
 }
