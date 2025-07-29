@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.ContentView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
@@ -41,9 +43,18 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.*
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -68,6 +79,7 @@ class MainActivity : ComponentActivity() {
                     )
                     FunctionGrid(modifier = Modifier.fillMaxWidth())
                     Screen(modifier = Modifier.fillMaxWidth())
+                    MenuScreen(modifier = Modifier.fillMaxWidth())
                 }
             }
         }
@@ -270,6 +282,7 @@ fun TopBar2(
                 .height(44.dp)
                 .background(MaterialTheme.colorScheme.background),
             verticalAlignment = Alignment.CenterVertically
+            //horizontalArrangement = Arrangement.spacedBy(25.dp)
         ) {
             if (!function.isNullOrBlank()) {
                 Text(
@@ -353,28 +366,229 @@ fun MenuItem(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(tabLabels) { label ->
+        itemsIndexed(tabLabels) { index, label ->
             val isSelected = label == selectedTab
-            FilledTonalButton(
+            Button(
                 onClick = { onTabSelected(label) },
+                modifier = Modifier
+                    .padding(start=if(index==0)12.dp else 0.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSelected) Color(0xFF508CEE) else Color(0xFFF5F7FB),
-                    contentColor = if (isSelected) Color(0xFFFFFFFF) else Color(0xFF808595)
+                    //containerColor = if (isSelected) Color(0xFF508CEE) else Color(0xFFF5F7FB),
+                    containerColor = Color(0xFFF5F7FB),
+                    contentColor = if (isSelected) Color(0xFF508CEE) else Color(0xFF808595)
                 ),
                 shape = RoundedCornerShape(3.dp),
-                contentPadding = PaddingValues(horizontal = 8.dp)
+                contentPadding = PaddingValues(horizontal = 8.dp),
+                border = BorderStroke(
+                    0.5.dp,
+                    if (isSelected) Color(0xFF508CEE) else Color(0xFFF5F7FB)
+                )
 
             ) {
-                Text(
-                    text = label,
-                    fontSize = 13.sp
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = label,
+                        fontSize = 13.sp
+                    )
+                    if (isSelected){
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Column{
+                            Icon(
+                                imageVector = Icons.Filled.ArrowDropUp,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .height(4.dp)
+                                    .width(6.dp),
+                                tint = Color(0xFF508CEE)
+                            )
+                            Icon(
+                                imageVector = Icons.Filled.ArrowDropDown,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .height(4.dp)
+                                    .width(6.dp),
+                                tint = Color(0xFF508CEE)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+@Composable
+fun Content(
+    label1:String,
+    number1:String,
+    label2:String,
+    number2:String,
+    onClick: () -> Unit
+){
+    Column(
+        modifier=Modifier
+            .width(120.dp)
+            .heightIn(min=100.dp)
+            .clickable{onClick()}
+            .background(MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally
+
+    ){
+        Text(
+            text=label1,
+            fontSize = 16.sp,
+            color = Color(0xFF333333),
+            modifier=Modifier
+                //.width(64.dp)
+                .height(23.dp)
+                //.padding(20.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        Text(
+            text = number1,
+            fontSize = 18.sp,
+            color = Color(0xFFFD4331),
+            modifier = Modifier
+                .height(20.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+            Row(
+                modifier = Modifier
+                    .width(120.dp)
+                    .heightIn(min=13.dp)
+                    .clickable{onClick()},
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(
+                    text=label2,
+                    fontSize = 13.sp,
+                    color = Color(0xFF808595),
+                    //modifier = Modifier.height(13.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text=number2,
+                    fontSize = 13.sp,
+                    color = Color(0xFFFD4332),
+                    //modifier = Modifier.height(13.dp)
+                )
+
+            }
+        }
+    }
+
+data class Item(
+    val label1: String,
+    val number1: String,
+    val label2: String,
+    val number2: String
+)
+
+@Composable
+fun ContentList(items:List<Item>){
+    LazyVerticalGrid (
+        columns = GridCells.Fixed(3),
+    modifier=Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.background),
+        contentPadding = PaddingValues(9.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
+){
+    items(items){item->
+        Content(
+            label1=item.label1,
+            number1=item.number1,
+            label2 = item.label2,
+            number2 = item.number2,
+            onClick = {}
+        )
+    }
+  }
+}
+
+@Composable
+fun ContentItem(modifier: Modifier=Modifier){
+    val sampleDate= listOf(
+        Item("元件", "+7.13%", "方邦股份", "+20.02%"),
+        Item("地面兵装II", "+3.57%", "光电股份", "+10.02%"),
+        Item("化学制药", "+3.52%", "尔康制药", "+14.63%"),
+        Item("保险II","+3.40%", "新华保险", "+4.86%"),
+        Item("塑料", "+2.96%", "上邦新材", "+18.32%"),
+        Item("影视院线", "+2.78%", "幸福蓝海", "+20.00%")
+    )
+    ContentList(items=sampleDate)
+}
+
+@Composable
+fun MenuScreen(modifier: Modifier=Modifier){
+    Column (modifier = Modifier
+        .fillMaxSize()){
+        //.verticalScroll(rememberScrollState())){
+        TopBar2(
+            LeftText = "热门行业",
+            MiddleText = "热门概念",
+            RightText = "资金热力图",
+            function = "更多"
+        )
+        Menu()
+        ContentItem()
+    }
+}
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun SearchBar(
+    //textFieldState: TextFieldState,
+    //onSearch: (String) -> Unit,
+    //searchResults: List<String>,
+    //modifier: Modifier = Modifier
+//){
+    //var expanded by rememberSaveable { mutableStateOf(false) }
+    //Box(
+        //modifier
+            //.fillMaxSize()
+            //.semantics { isTraversalGroup = true }
+    //) {
+        //SearchBar(
+            //modifier = Modifier
+                //.align(Alignment.TopCenter)
+                //.semantics { traversalIndex = 0f },
+            //inputField = {
+                //SearchBarDefaults.InputField(
+                    //query = textFieldValue.text.toString(),
+                    //onQueryChange = { textFieldState.edit { replace(0, length, it) } },
+                    //onSearch = {
+                        //onSearch(textFieldState.text.toString())
+                        //expanded = false
+                    //},
+                    //expanded = expanded,
+                    //onExpandedChange = { expanded = it },
+                    //placeholder = { Text("Search") }
+                //)
+            //},
+            //expanded = expanded,
+            //onExpandedChange = { expanded = it },
+        //){
+            //Column(Modifier.verticalScroll(rememberScrollState())) {
+                //searchResults.forEach { result ->
+                    //ListItem(
+                        //headlineContent = { Text(result) },
+                        //modifier = Modifier
+                            //.clickable {
+                                //textFieldState.edit { replace(0, length, result) }
+                                //expanded = false
+                            //}
+                            //.fillMaxWidth()
+                    //)
+                //}
+            //}
+        //}
+    //}
+
+//}
 
 @Preview(showBackground = true)
 @Composable
@@ -421,5 +635,21 @@ fun TopBar2Preview(){
 fun MenuPreview(){
     MyApplicationTheme{
         Menu()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ContentItemPreview(){
+    MyApplicationTheme{
+        ContentItem()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuScreenPreview(){
+    MyApplicationTheme{
+        MenuScreen()
     }
 }
