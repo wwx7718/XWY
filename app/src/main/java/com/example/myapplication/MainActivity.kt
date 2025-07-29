@@ -55,6 +55,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.ui.focus.focusModifier
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -69,17 +74,28 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    TopBar(
-                        name = "数据中心",
-                        function = "更多",
+                    Column(
                         modifier = Modifier
                             .padding(innerPadding)
-                            .fillMaxWidth()
-                            .padding(17.dp)
-                    )
-                    FunctionGrid(modifier = Modifier.fillMaxWidth())
-                    Screen(modifier = Modifier.fillMaxWidth())
-                    MenuScreen(modifier = Modifier.fillMaxWidth())
+                            .fillMaxSize()
+                    ) {
+                        //TopBar(
+                            //name = "数据中心",
+                            //function = "更多",
+                            //modifier = Modifier
+                                //.padding(innerPadding)
+                                //.fillMaxWidth()
+                                //.padding(17.dp)
+                        //)
+                        //FunctionGrid(modifier = Modifier.fillMaxWidth())
+                        //Screen(modifier = Modifier.fillMaxWidth())
+                        //MenuScreen(modifier = Modifier.fillMaxWidth())
+                        SimpleSearchBar(
+                            modifier = Modifier.fillMaxWidth(),
+                            onSearch = {},
+                            searchResults = emptyList()
+                        )
+                    }
                 }
             }
         }
@@ -538,57 +554,132 @@ fun MenuScreen(modifier: Modifier=Modifier){
     }
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun SearchBar(
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SimpleSearchBar(
     //textFieldState: TextFieldState,
-    //onSearch: (String) -> Unit,
-    //searchResults: List<String>,
-    //modifier: Modifier = Modifier
-//){
+    onSearch: (String) -> Unit,
+    searchResults: List<String>,
+    modifier: Modifier = Modifier
+) {
     //var expanded by rememberSaveable { mutableStateOf(false) }
-    //Box(
-        //modifier
-            //.fillMaxSize()
-            //.semantics { isTraversalGroup = true }
-    //) {
-        //SearchBar(
-            //modifier = Modifier
-                //.align(Alignment.TopCenter)
-                //.semantics { traversalIndex = 0f },
-            //inputField = {
-                //SearchBarDefaults.InputField(
-                    //query = textFieldValue.text.toString(),
-                    //onQueryChange = { textFieldState.edit { replace(0, length, it) } },
-                    //onSearch = {
-                        //onSearch(textFieldState.text.toString())
-                        //expanded = false
-                    //},
-                    //expanded = expanded,
-                    //onExpandedChange = { expanded = it },
-                    //placeholder = { Text("Search") }
-                //)
-            //},
-            //expanded = expanded,
-            //onExpandedChange = { expanded = it },
-        //){
-            //Column(Modifier.verticalScroll(rememberScrollState())) {
-                //searchResults.forEach { result ->
-                    //ListItem(
-                        //headlineContent = { Text(result) },
-                        //modifier = Modifier
-                            //.clickable {
-                                //textFieldState.edit { replace(0, length, result) }
-                                //expanded = false
-                            //}
-                            //.fillMaxWidth()
-                    //)
-                //}
-            //}
-        //}
-    //}
+    var query by rememberSaveable { mutableStateOf("") }
+    var active by rememberSaveable { mutableStateOf(false) }
 
-//}
+    if (!active) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.AccountCircle,
+                contentDescription = "Profile",
+                modifier = Modifier
+                    .size(28.dp)
+                    .clickable {}
+            )
+
+            SearchBar(
+                modifier = Modifier
+                    .padding(9.dp)
+                    .semantics { isTraversalGroup = true }
+                    //.height(32.dp)
+                    .weight(1f),
+                //.width(279.dp),
+                query = query,
+                onQueryChange = { query = it },
+                onSearch = {
+                    onSearch(query)
+                    active = false
+                },
+                active = active,
+                onActiveChange = { active = it },
+                placeholder = { Text("Search") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search Iocn"
+                    )
+                },
+                trailingIcon = {
+                    Text(
+                        text = "搜索",
+                        color = Color(0xFF508CEE),
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .clickable {
+                                onSearch(query)
+                                active = false
+                            }
+                    )
+                },
+                shape = RoundedCornerShape(4.dp)
+            ) {
+            }
+
+            Image(
+                painter = painterResource(id = R.drawable.moreoption),
+                contentDescription = "More",
+                modifier = Modifier
+                    .size(20.dp)
+                    .clickable {}
+            )
+        }
+    } else{
+        SearchBar(
+            modifier = Modifier
+                .padding(9.dp)
+                .semantics { isTraversalGroup = true }
+                //.height(32.dp)
+                .fillMaxWidth(),
+            //.width(279.dp),
+            query = query,
+            onQueryChange = { query = it },
+            onSearch = {
+                onSearch(query)
+                active = false
+            },
+            active = active,
+            onActiveChange = { active = it },
+            placeholder = { Text("Search") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search Iocn"
+                )
+            },
+            trailingIcon = {
+                Image(
+                    painter = painterResource(id=R.drawable.upload),
+                    contentDescription = "Photo upload",
+                    modifier = Modifier
+                        .clickable {
+                            onSearch(query)
+                        }
+                        .size(24.dp)
+                )
+            },
+            shape = RoundedCornerShape(4.dp)
+        ){
+            // Display search results in a scrollable column
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                searchResults.forEach { result ->
+                    ListItem(
+                        headlineContent = { Text(result) },
+                        modifier = Modifier
+                            .clickable {
+                                query = result
+                                active = false
+                            }
+                            .fillMaxWidth()
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -651,5 +742,16 @@ fun ContentItemPreview(){
 fun MenuScreenPreview(){
     MyApplicationTheme{
         MenuScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SimpleSearchBarPreview(){
+    MyApplicationTheme{
+        SimpleSearchBar(
+            searchResults = emptyList(),
+            onSearch = {}
+        )
     }
 }
