@@ -24,6 +24,7 @@ import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.TextStyle
@@ -90,11 +91,12 @@ class MainActivity : ComponentActivity() {
                         //FunctionGrid(modifier = Modifier.fillMaxWidth())
                         //Screen(modifier = Modifier.fillMaxWidth())
                         //MenuScreen(modifier = Modifier.fillMaxWidth())
-                        SimpleSearchBar(
-                            modifier = Modifier.fillMaxWidth(),
-                            onSearch = {},
-                            searchResults = emptyList()
-                        )
+                        //SimpleSearchBar(
+                            //modifier = Modifier.fillMaxWidth(),
+                            //onSearch = {},
+                            //searchResults = emptyList()
+                        //)
+                        MySearchBar()
                     }
                 }
             }
@@ -579,13 +581,14 @@ fun SimpleSearchBar(
                 modifier = Modifier
                     .size(28.dp)
                     .clickable {}
+                    .height(56.dp)
             )
 
             SearchBar(
                 modifier = Modifier
                     .padding(9.dp)
                     .semantics { isTraversalGroup = true }
-                    //.height(32.dp)
+                    .height(56.dp)
                     .weight(1f),
                 //.width(279.dp),
                 query = query,
@@ -625,14 +628,28 @@ fun SimpleSearchBar(
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {}
+                    .height(56.dp)
             )
         }
     } else{
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(
+                imageVector = Icons.Filled.ChevronLeft,
+                contentDescription = "Return",
+                //modifier=Modifier.offset(x=pxToDp(355.3f)),
+                tint = Color(0xFF808595)
+            )
+
         SearchBar(
             modifier = Modifier
                 .padding(9.dp)
                 .semantics { isTraversalGroup = true }
-                //.height(32.dp)
+                .height(56.dp)
                 .fillMaxWidth(),
             //.width(279.dp),
             query = query,
@@ -641,8 +658,10 @@ fun SimpleSearchBar(
                 onSearch(query)
                 active = false
             },
-            active = active,
-            onActiveChange = { active = it },
+            active = false,
+            onActiveChange = {},
+            //active = active,
+            //onActiveChange = { active = it },
             placeholder = { Text("Search") },
             leadingIcon = {
                 Icon(
@@ -662,21 +681,32 @@ fun SimpleSearchBar(
                 )
             },
             shape = RoundedCornerShape(4.dp)
-        ){
+        ) {
             // Display search results in a scrollable column
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                searchResults.forEach { result ->
-                    ListItem(
-                        headlineContent = { Text(result) },
-                        modifier = Modifier
-                            .clickable {
-                                query = result
-                                active = false
-                            }
-                            .fillMaxWidth()
-                    )
-                }
-            }
+            //Column(Modifier.verticalScroll(rememberScrollState())) {
+                //searchResults.forEach { result ->
+                    //ListItem(
+                        //headlineContent = { Text(result) },
+                        //modifier = Modifier
+                            //.clickable {
+                                //query = result
+                                //active = false
+                            //}
+                            //.fillMaxWidth()
+                    //)
+                //}
+            //}
+          }
+                Text(
+                    text = "搜索",
+                    color = Color(0xFF508CEE),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .clickable {
+                            onSearch(query)
+                            active = false
+                        }
+                )
         }
     }
 }
