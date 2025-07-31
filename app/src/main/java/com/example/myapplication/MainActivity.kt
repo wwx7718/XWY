@@ -566,7 +566,7 @@ fun SimpleSearchBar(
 ) {
     //var expanded by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf("") }
-    var active by rememberSaveable { mutableStateOf(false) }
+    var active by rememberSaveable { mutableStateOf(true) }
 
     if (!active) {
         Row(
@@ -650,7 +650,8 @@ fun SimpleSearchBar(
                 .padding(9.dp)
                 .semantics { isTraversalGroup = true }
                 .height(56.dp)
-                .fillMaxWidth(),
+                //.fillMaxWidth(),
+                .weight(1f),
             //.width(279.dp),
             query = query,
             onQueryChange = { query = it },
@@ -682,34 +683,23 @@ fun SimpleSearchBar(
             },
             shape = RoundedCornerShape(4.dp)
         ) {
-            // Display search results in a scrollable column
-            //Column(Modifier.verticalScroll(rememberScrollState())) {
-                //searchResults.forEach { result ->
-                    //ListItem(
-                        //headlineContent = { Text(result) },
-                        //modifier = Modifier
-                            //.clickable {
-                                //query = result
-                                //active = false
-                            //}
-                            //.fillMaxWidth()
-                    //)
-                //}
-            //}
-          }
-                Text(
-                    text = "搜索",
-                    color = Color(0xFF508CEE),
-                    fontSize = 14.sp,
-                    modifier = Modifier
-                        .clickable {
-                            onSearch(query)
-                            active = false
-                        }
-                )
+        }
+
+            Text(
+                text = "搜索",
+                color = Color(0xFF508CEE),
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .clickable {
+                        onSearch(query)
+                        active = false
+                    }
+            )
         }
     }
 }
+
+
 
 @Preview(showBackground = true)
 @Composable
@@ -785,3 +775,4 @@ fun SimpleSearchBarPreview(){
         )
     }
 }
+

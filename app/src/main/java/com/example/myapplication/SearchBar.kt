@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -59,13 +60,16 @@ import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
+//import androidx.compose.foundation.layout.FlowRowScopeInstance.weight
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -110,29 +114,69 @@ fun CustomSearchBar(
     onSearch: ()-> Unit,
     onQueryChange:(String)->Unit,
     modifier: Modifier=Modifier
-){
-    Row(
-        modifier=Modifier
-            //.height(64.dp)
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background),
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        TextField(
-            value = query,
-            onValueChange = onQueryChange,
-            modifier=Modifier
-                //.weight(1f)
-                //.height(14.dp)
-                .background(Color(0xFFF5F7FB)),
-            placeholder = { Text("Search") },
-            leadingIcon = {
+) {
+    var query by rememberSaveable { mutableStateOf("") }
+    var active by rememberSaveable { mutableStateOf(true) }
+
+    Column() {
+        if(!active) {
+
+            Row(
+                modifier = Modifier
+                    //.height(64.dp)
+                    //.fillMaxWidth()
+                    //.height(32.dp)
+                    .width(279.dp)
+                    .background(Color(0xFFF5F7FB)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search Iocn"
+                    contentDescription = "Search Iocn",
+                    modifier = Modifier.padding(horizontal = 10.dp)
                 )
-            },
-            trailingIcon = {
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (query.isEmpty()) {
+                        Text(
+                            text = "Search",
+                            fontSize = 14.sp,
+                            color = Color(0xFF9A9EAD)
+                        )
+                    }
+
+                    BasicTextField(
+                        value = query,
+                        onValueChange = onQueryChange,
+                        modifier = Modifier
+                            //.weight(1f)
+                            //.height(14.dp)
+                            //.height(32.dp)
+                            .fillMaxWidth(),
+                        //.align(Alignment.CenterVertically),
+                        //.background(Color(0xFFF5F7FB)),
+                        textStyle = TextStyle(
+                            fontSize = 14.sp,
+                            color = Color(0xFF9A9EAD),
+                        )
+                    )
+                }
+                //placeholder = { Text(
+                //"Search",
+                //fontSize = 14.sp)},
+                ////modifier=Modifier.height(32.dp)) },
+                //leadingIcon = {
+                //Icon(
+                //imageVector = Icons.Default.Search,
+                //contentDescription = "Search Iocn"
+                //)
+                //},
+                //trailingIcon = {
                 Text(
                     text = "搜索",
                     color = Color(0xFF508CEE),
@@ -141,60 +185,170 @@ fun CustomSearchBar(
                         .clickable {
                             onSearch()
                         }
+                        .padding(horizontal = 10.dp)
                 )
-            },
-            textStyle = TextStyle(color = Color(0xFF9A9EAD)),
-            maxLines = 1,
-            singleLine=true
-        )
+                //},
+                //textStyle = TextStyle(
+                //color = Color(0xFF9A9EAD),
+                //fontSize = 14.sp),
+                //maxLines = 1,
+                //singleLine=true
+                //)
 
+            }
+        }else{
+            Row(
+                modifier = Modifier
+                    //.height(64.dp)
+                    //.fillMaxWidth()
+                    //.height(32.dp)
+                    .width(279.dp)
+                    .background(Color(0xFFF5F7FB)),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search Iocn",
+                    modifier = Modifier.padding(horizontal = 10.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (query.isEmpty()) {
+                        Text(
+                            text = "Search",
+                            fontSize = 14.sp,
+                            color = Color(0xFF9A9EAD)
+                        )
+                    }
+
+                    BasicTextField(
+                        value = query,
+                        onValueChange = onQueryChange,
+                        modifier = Modifier
+                            //.weight(1f)
+                            //.height(14.dp)
+                            //.height(32.dp)
+                            .fillMaxWidth(),
+                        //.align(Alignment.CenterVertically),
+                        //.background(Color(0xFFF5F7FB)),
+                        textStyle = TextStyle(
+                            fontSize = 14.sp,
+                            color = Color(0xFF9A9EAD),
+                        )
+                    )
+                }
+                Image(
+                    painter = painterResource(id=R.drawable.upload),
+                    contentDescription = "Photo upload",
+                    modifier = Modifier
+                        .clickable {
+                            onSearch()
+                        }
+                        .size(24.dp)
+                        .padding(horizontal = 2.dp)
+                )
+
+
+            }
+        }
     }
 }
 
 @Composable
-fun MySearchBar(){
-    var query by remember{ mutableStateOf("") }
-    Row(
-        modifier=Modifier
-            //.height(64.dp)
-            //.wrapContentHeight()
-            .padding(12.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        Icon(
-            imageVector = Icons.Filled.AccountCircle,
-            contentDescription = "Profile",
-            modifier = Modifier
-                .size(28.dp)
-                .clickable {}
-                //.height(56.dp)
-        )
-        Spacer(modifier=Modifier.width(12.dp))
-        CustomSearchBar(
-            query=query,
-            onQueryChange={query=it},
-            onSearch = {},
-            modifier=Modifier.weight(1f)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
+fun MySearchBar() {
+    var query by remember { mutableStateOf("") }
+    var active by rememberSaveable { mutableStateOf(true) }
 
-        Image(
-            painter = painterResource(id = R.drawable.moreoption),
-            contentDescription = "More",
-            modifier = Modifier
-                .size(20.dp)
-                .clickable {}
-                //.height(56.dp)
-        )
+    Column() {
+        if (!active) {
+            Row(
+                modifier = Modifier
+                    .height(64.dp)
+                    //.wrapContentHeight()
+                    .padding(12.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = "Profile",
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable {}
+                        .height(32.dp)
+                    //.height(56.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                CustomSearchBar(
+                    query = query,
+                    onQueryChange = { query = it },
+                    onSearch = {},
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(32.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.moresearch),
+                    //imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "More",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .requiredSize(20.dp)
+                        .clickable {}
+                        .padding(horizontal = 2.dp)
+                    //.height(32.dp)
+                    //.height(56.dp)
+                )
+            }
+        }else{
+            Row(
+                modifier = Modifier
+                    .height(64.dp)
+                    //.wrapContentHeight()
+                    .padding(12.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ChevronLeft,
+                    contentDescription = "Return",
+                    //modifier=Modifier.offset(x=pxToDp(355.3f)),
+                    tint = Color(0xFF808595)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                CustomSearchBar(
+                    query = query,
+                    onQueryChange = { query = it },
+                    onSearch = {},
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(32.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Text(
+                    text = "搜索",
+                    color = Color(0xFF508CEE),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .clickable {}
+                        //.padding(horizontal = 2.dp)
+                )
+            }
+        }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
-fun MySearchBarPreview(){
-    MyApplicationTheme{
+fun MySearchBarPreview() {
+    MyApplicationTheme {
         MySearchBar()
     }
 }
