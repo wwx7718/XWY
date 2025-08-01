@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
@@ -113,19 +114,22 @@ fun CustomSearchBar(
     query: String,
     onSearch: ()-> Unit,
     onQueryChange:(String)->Unit,
+    active:Boolean,
+    onActiveChange:(Boolean)->Unit,
     modifier: Modifier=Modifier
 ) {
-    var query by rememberSaveable { mutableStateOf("") }
-    var active by rememberSaveable { mutableStateOf(true) }
+    //var query by rememberSaveable { mutableStateOf("") }
+    //var active by rememberSaveable { mutableStateOf(false) }
 
     Column() {
         if(!active) {
 
             Row(
                 modifier = Modifier
+                    .clickable { onActiveChange(true) }
                     //.height(64.dp)
                     //.fillMaxWidth()
-                    //.height(32.dp)
+                    .height(32.dp)
                     .width(279.dp)
                     .background(Color(0xFFF5F7FB)),
                 verticalAlignment = Alignment.CenterVertically
@@ -150,21 +154,6 @@ fun CustomSearchBar(
                         )
                     }
 
-                    BasicTextField(
-                        value = query,
-                        onValueChange = onQueryChange,
-                        modifier = Modifier
-                            //.weight(1f)
-                            //.height(14.dp)
-                            //.height(32.dp)
-                            .fillMaxWidth(),
-                        //.align(Alignment.CenterVertically),
-                        //.background(Color(0xFFF5F7FB)),
-                        textStyle = TextStyle(
-                            fontSize = 14.sp,
-                            color = Color(0xFF9A9EAD),
-                        )
-                    )
                 }
                 //placeholder = { Text(
                 //"Search",
@@ -201,7 +190,7 @@ fun CustomSearchBar(
                 modifier = Modifier
                     //.height(64.dp)
                     //.fillMaxWidth()
-                    //.height(32.dp)
+                    .height(32.dp)
                     .width(279.dp)
                     .background(Color(0xFFF5F7FB)),
                 verticalAlignment = Alignment.CenterVertically
@@ -229,10 +218,11 @@ fun CustomSearchBar(
                         value = query,
                         onValueChange = onQueryChange,
                         modifier = Modifier
+                            .focusable(true),
                             //.weight(1f)
                             //.height(14.dp)
                             //.height(32.dp)
-                            .fillMaxWidth(),
+                            //.fillMaxWidth(),
                         //.align(Alignment.CenterVertically),
                         //.background(Color(0xFFF5F7FB)),
                         textStyle = TextStyle(
@@ -244,12 +234,15 @@ fun CustomSearchBar(
                 Image(
                     painter = painterResource(id=R.drawable.upload),
                     contentDescription = "Photo upload",
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .clickable {
                             onSearch()
+                            onActiveChange(true)
                         }
-                        .size(24.dp)
-                        .padding(horizontal = 2.dp)
+                        .requiredSize(24.dp)
+                        //.size(24.dp)
+                        .padding(horizontal = 3.dp)
                 )
 
 
@@ -259,9 +252,11 @@ fun CustomSearchBar(
 }
 
 @Composable
-fun MySearchBar() {
+fun MySearchBar(
+    modifier: Modifier=Modifier
+) {
     var query by remember { mutableStateOf("") }
-    var active by rememberSaveable { mutableStateOf(true) }
+    var active by rememberSaveable { mutableStateOf(false) }
 
     Column() {
         if (!active) {
@@ -282,16 +277,20 @@ fun MySearchBar() {
                         .height(32.dp)
                     //.height(56.dp)
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 CustomSearchBar(
                     query = query,
                     onQueryChange = { query = it },
-                    onSearch = {},
+                    onSearch = {active =false},
+                    active = active,
+                    onActiveChange = {active=it},
                     modifier = Modifier
                         .weight(1f)
                         .height(32.dp)
+                        .padding(end=44.dp)
+                        .then(Modifier.widthIn(max=279.dp))
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(6.dp))
 
                 Image(
                     painter = painterResource(id = R.drawable.moresearch),
@@ -319,24 +318,31 @@ fun MySearchBar() {
                     imageVector = Icons.Filled.ChevronLeft,
                     contentDescription = "Return",
                     //modifier=Modifier.offset(x=pxToDp(355.3f)),
-                    tint = Color(0xFF808595)
+                    tint = Color(0xFF808595),
+                    modifier=Modifier
+                        .clickable { active =false}
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(2.dp))
                 CustomSearchBar(
                     query = query,
                     onQueryChange = { query = it },
-                    onSearch = {},
+                    onSearch = {active=true},
+                    active = active,
+                    onActiveChange = {active=it},
                     modifier = Modifier
                         .weight(1f)
                         .height(32.dp)
+                        //.padding(end=44.dp)
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(1.dp))
 
                 Text(
                     text = "搜索",
                     color = Color(0xFF508CEE),
                     fontSize = 14.sp,
                     modifier = Modifier
+                        //.widthIn(min=40.dp)
+                        //.wrapContentHeight()
                         .clickable {}
                         //.padding(horizontal = 2.dp)
                 )
