@@ -61,6 +61,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.text.style.TextAlign
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -566,7 +567,7 @@ fun SimpleSearchBar(
 ) {
     //var expanded by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf("") }
-    var active by rememberSaveable { mutableStateOf(true) }
+    var active by rememberSaveable { mutableStateOf(false) }
 
     if (!active) {
         Row(
@@ -699,6 +700,85 @@ fun SimpleSearchBar(
     }
 }
 
+@Composable
+fun MenuBarItem() {
+    val tabLabels = listOf(
+        "A股",
+        "环球",
+        "基金",
+        "期货",
+        "美股",
+        "港股",
+        "外汇",
+        "债券",
+        "新三板",
+        "期权",
+        "数字币",
+        "英股"
+    )
+    var selectedTab by remember { mutableStateOf(tabLabels[0]) }
+
+    MenuBar(
+        tabLabels = tabLabels,
+        selectedTab = selectedTab,
+        onTabSelected = { selectedTab = it }
+    )
+}
+
+@Composable
+fun MenuBar(
+    tabLabels: List<String>,
+    selectedTab: String,
+    onTabSelected:(String) -> Unit
+){
+    val itemHeight=34.dp
+    val lineHeight=3.dp
+
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ){
+        itemsIndexed(tabLabels) { index, label ->
+            val isSelected = label == selectedTab
+            Column(
+                modifier=Modifier
+                    .padding(start = if(index==0) 12.dp else 0.dp)
+                    .clickable { onTabSelected(label) },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = label,
+                    //modifier=Modifier
+                        //.padding(top=6.dp, bottom = 12.dp),
+                    modifier=Modifier.padding(
+                        top = if(isSelected) 3.dp else 6.dp,
+                        bottom = if(isSelected) 12.dp else 9.dp
+                    ),
+                    //textAlign = TextAlign.Center,
+                    //modifier = Modifier
+                        //.padding(start = if (index == 0) 12.dp else 0.dp)
+                        //.clickable { onTabSelected(label) },
+                    color = if (isSelected) Color(0xFF333333) else Color(0xFF808595),
+                    //style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = if (isSelected) 19.sp else 16.sp
+                    //)
+                )
+                if(isSelected){
+                    //Spacer(modifier=Modifier.height(9.dp))
+                    Box(
+                        modifier=Modifier
+                            .height(3.dp)
+                            .width(24.dp)
+                            .background(Color(0xFF508CEE))
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 
 @Preview(showBackground = true)
@@ -773,6 +853,14 @@ fun SimpleSearchBarPreview(){
             searchResults = emptyList(),
             onSearch = {}
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuBarItemPreview(){
+    MyApplicationTheme {
+        MenuBarItem()
     }
 }
 
