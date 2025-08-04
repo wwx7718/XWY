@@ -61,7 +61,10 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
+import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -74,7 +77,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            MyApplicationTheme (darkTheme = true){
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier
@@ -97,7 +100,8 @@ class MainActivity : ComponentActivity() {
                             //onSearch = {},
                             //searchResults = emptyList()
                         //)
-                        MySearchBar()
+                        //MySearchBar()
+                        MenuBarItem()
                     }
                 }
             }
@@ -568,11 +572,13 @@ fun SimpleSearchBar(
     //var expanded by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
+    val colors=MaterialTheme.colorScheme
 
     if (!active) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -636,6 +642,7 @@ fun SimpleSearchBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
@@ -730,51 +737,82 @@ fun MenuBar(
     tabLabels: List<String>,
     selectedTab: String,
     onTabSelected:(String) -> Unit
-){
-    val itemHeight=34.dp
-    val lineHeight=3.dp
+) {
+    val itemHeight = 34.dp
+    val lineHeight = 3.dp
+    val colors=MaterialTheme.colorScheme
 
-    LazyRow(
+    Row(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(20.dp)
-    ){
-        itemsIndexed(tabLabels) { index, label ->
-            val isSelected = label == selectedTab
-            Column(
-                modifier=Modifier
-                    .padding(start = if(index==0) 12.dp else 0.dp)
-                    .clickable { onTabSelected(label) },
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = label,
-                    //modifier=Modifier
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        LazyRow(
+            modifier = Modifier
+                //.fillMaxWidth(),
+                .weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            itemsIndexed(tabLabels) { index, label ->
+                val isSelected = label == selectedTab
+                val isLast = index == tabLabels.lastIndex
+                Column(
+                    modifier = Modifier
+                        .padding(start = if (index == 0) 12.dp else 0.dp)
+                        .padding(end = if (isLast) 12.dp else 0.dp)
+                        .clickable { onTabSelected(label) },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    val isDarkTheme = isSystemInDarkTheme()
+                    Text(
+                        text = label,
+                        //modifier=Modifier
                         //.padding(top=6.dp, bottom = 12.dp),
-                    modifier=Modifier.padding(
-                        top = if(isSelected) 3.dp else 6.dp,
-                        bottom = if(isSelected) 12.dp else 9.dp
-                    ),
-                    //textAlign = TextAlign.Center,
-                    //modifier = Modifier
+                        modifier = Modifier.padding(
+                            top = if (isSelected) 3.dp else 6.dp,
+                            bottom = if (isSelected) 12.dp else 9.dp
+                        ),
+                        //textAlign = TextAlign.Center,
+                        //modifier = Modifier
                         //.padding(start = if (index == 0) 12.dp else 0.dp)
                         //.clickable { onTabSelected(label) },
-                    color = if (isSelected) Color(0xFF333333) else Color(0xFF808595),
-                    //style = MaterialTheme.typography.bodyMedium.copy(
+                        //color = if (isSelected) Color(0xFF333333) else Color(0xFF808595),
+                        color = when{
+                            isSelected && isDarkTheme -> Color(0xFF508CEE)
+                            isSelected -> Color(0xFF333333)
+                            else -> Color(0xFF808595)
+                        },
+                        //style = MaterialTheme.typography.bodyMedium.copy(
                         fontSize = if (isSelected) 19.sp else 16.sp
-                    //)
-                )
-                if(isSelected){
-                    //Spacer(modifier=Modifier.height(9.dp))
-                    Box(
-                        modifier=Modifier
-                            .height(3.dp)
-                            .width(24.dp)
-                            .background(Color(0xFF508CEE))
+                        //)
                     )
+                    if (isSelected) {
+                        //Spacer(modifier=Modifier.height(9.dp))
+                        Box(
+                            modifier = Modifier
+                                .height(3.dp)
+                                .width(24.dp)
+                                .background(Color(0xFF508CEE))
+                        )
+                    }
                 }
             }
+        }
+        IconButton(
+            onClick = {},
+            modifier = Modifier
+                .padding(end = 12.dp)
+                .size(30.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.expandmore),
+                contentDescription = "Expand",
+                modifier = Modifier
+                    .size(20.dp)
+            )
         }
     }
 }
@@ -782,6 +820,7 @@ fun MenuBar(
 
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun TopBarPreview() {
     MyApplicationTheme {
@@ -793,6 +832,7 @@ fun TopBarPreview() {
 }
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun FunctionGridPreview(){
     MyApplicationTheme{
@@ -801,6 +841,7 @@ fun FunctionGridPreview(){
 }
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun ScreenPreview(){
     MyApplicationTheme{
@@ -809,6 +850,7 @@ fun ScreenPreview(){
 }
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun TopBar2Preview(){
     MyApplicationTheme{
@@ -822,6 +864,7 @@ fun TopBar2Preview(){
 }
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun MenuPreview(){
     MyApplicationTheme{
@@ -830,6 +873,7 @@ fun MenuPreview(){
 }
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun ContentItemPreview(){
     MyApplicationTheme{
@@ -838,6 +882,7 @@ fun ContentItemPreview(){
 }
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun MenuScreenPreview(){
     MyApplicationTheme{
@@ -846,6 +891,7 @@ fun MenuScreenPreview(){
 }
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun SimpleSearchBarPreview(){
     MyApplicationTheme{
@@ -857,6 +903,7 @@ fun SimpleSearchBarPreview(){
 }
 
 @Preview(showBackground = true)
+    //, uiMode = Configuration.UI_MODE_NIGHT_YES, name="Dark Mode")
 @Composable
 fun MenuBarItemPreview(){
     MyApplicationTheme {
