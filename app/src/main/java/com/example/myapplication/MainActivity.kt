@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme (darkTheme = true){
+            MyApplicationTheme (darkTheme = false){
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier
@@ -101,7 +101,8 @@ class MainActivity : ComponentActivity() {
                             //searchResults = emptyList()
                         //)
                         //MySearchBar()
-                        MenuBarItem()
+                        //MenuBarItem()
+                        MainTopBar()
                     }
                 }
             }

@@ -37,6 +37,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
@@ -120,8 +121,11 @@ fun CustomSearchBar(
 ) {
     //var query by rememberSaveable { mutableStateOf("") }
     //var active by rememberSaveable { mutableStateOf(false) }
+    val colors=MaterialTheme.colorScheme
 
-    Column() {
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+    ) {
         if(!active) {
 
             Row(
@@ -257,6 +261,7 @@ fun MySearchBar(
 ) {
     var query by remember { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
+    val colors=MaterialTheme.colorScheme
 
     Column() {
         if (!active) {
@@ -265,7 +270,8 @@ fun MySearchBar(
                     .height(64.dp)
                     //.wrapContentHeight()
                     .padding(12.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -311,7 +317,8 @@ fun MySearchBar(
                     .height(64.dp)
                     //.wrapContentHeight()
                     .padding(12.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -351,10 +358,156 @@ fun MySearchBar(
     }
 }
 
+@Composable
+fun MenuOption(){
+    val tabLabels=listOf(
+        "A股",
+        "环球",
+        "基金",
+        "期货",
+        "美股",
+        "港股",
+        "外汇",
+        "债券",
+        "新三板",
+        "期权",
+        "数字币",
+        "英股"
+    )
+    var selectedTab by remember{ mutableStateOf(tabLabels[0]) }
+
+    MenuOptionBar(
+        tabLabels=tabLabels,
+        selectedTab=selectedTab,
+        onTabSelected={selectedTab=it}
+    )
+}
+
+@Composable
+fun MenuOptionBar(
+    tabLabels: List<String>,
+    selectedTab: String,
+    onTabSelected:(String) -> Unit
+){
+    val itemHeight = 34.dp
+    val lineHeight = 3.dp
+    val colors=MaterialTheme.colorScheme
+
+    Row(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        LazyRow(
+            modifier = Modifier
+                //.fillMaxWidth(),
+                .weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            itemsIndexed(tabLabels) { index, label ->
+                val isSelected = label == selectedTab
+                val isLast = index == tabLabels.lastIndex
+                Column(
+                    modifier = Modifier
+                        .padding(start = if (index == 0) 12.dp else 0.dp)
+                        .padding(end = if (isLast) 12.dp else 0.dp)
+                        .clickable { onTabSelected(label) },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    val isDarkTheme = isSystemInDarkTheme()
+                    Text(
+                        text = label,
+                        //modifier=Modifier
+                        //.padding(top=6.dp, bottom = 12.dp),
+                        modifier = Modifier.padding(
+                            top = if (isSelected) 3.dp else 6.dp,
+                            bottom = if (isSelected) 12.dp else 9.dp
+                        ),
+                        //textAlign = TextAlign.Center,
+                        //modifier = Modifier
+                        //.padding(start = if (index == 0) 12.dp else 0.dp)
+                        //.clickable { onTabSelected(label) },
+                        //color = if (isSelected) Color(0xFF333333) else Color(0xFF808595),
+                        color = when{
+                            isSelected && isDarkTheme -> Color(0xFF508CEE)
+                            isSelected -> Color(0xFF333333)
+                            else -> Color(0xFF808595)
+                        },
+                        //style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = if (isSelected) 19.sp else 16.sp
+                        //)
+                    )
+                    if (isSelected) {
+                        //Spacer(modifier=Modifier.height(9.dp))
+                        Box(
+                            modifier = Modifier
+                                .height(3.dp)
+                                .width(24.dp)
+                                .background(Color(0xFF508CEE))
+                        )
+                    }
+                }
+            }
+        }
+        IconButton(
+            onClick = {},
+            modifier = Modifier
+                .padding(end = 12.dp)
+                .size(30.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.expandmore),
+                contentDescription = "Expand",
+                modifier = Modifier
+                    .size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun MainTopBar(){
+    Scaffold(
+        topBar = {
+            Column (
+                modifier = Modifier
+                    .height(130.dp)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+            ){
+                MySearchBar()
+                MenuOption()
+            }
+        }
+    ){
+        innerPadding ->
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
 fun MySearchBarPreview() {
     MyApplicationTheme {
         MySearchBar()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuOptionPreview(){
+    MyApplicationTheme{
+        MenuOption()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainTopBarPreview(){
+    MyApplicationTheme{
+        MainTopBar()
     }
 }
