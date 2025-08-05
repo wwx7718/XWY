@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.app.DownloadManager.Query
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -122,6 +123,8 @@ fun CustomSearchBar(
     //var query by rememberSaveable { mutableStateOf("") }
     //var active by rememberSaveable { mutableStateOf(false) }
     val colors=MaterialTheme.colorScheme
+    val darkTheme = false
+    val backgroundColor = if (darkTheme) {Color(0xFF232529)} else {Color(0xFFF5F7FB)}
 
     Column(
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
@@ -135,7 +138,9 @@ fun CustomSearchBar(
                     //.fillMaxWidth()
                     .height(32.dp)
                     .width(279.dp)
-                    .background(Color(0xFFF5F7FB)),
+                    //.background(Color(0xFFF5F7FB)),
+                    .background(backgroundColor),
+                    //.background(MaterialTheme.colorScheme.onSurfaceVariant),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -196,7 +201,8 @@ fun CustomSearchBar(
                     //.fillMaxWidth()
                     .height(32.dp)
                     .width(279.dp)
-                    .background(Color(0xFFF5F7FB)),
+                    //.background(Color(0xFFF5F7FB)),
+                    .background(backgroundColor),
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Icon(
@@ -293,8 +299,8 @@ fun MySearchBar(
                     modifier = Modifier
                         .weight(1f)
                         .height(32.dp)
-                        .padding(end=44.dp)
-                        .then(Modifier.widthIn(max=279.dp))
+                        .padding(end = 44.dp)
+                        .then(Modifier.widthIn(max = 279.dp))
                 )
                 Spacer(modifier = Modifier.width(6.dp))
 
@@ -504,7 +510,8 @@ fun MenuOptionPreview(){
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true
+    , uiMode = Configuration.UI_MODE_NIGHT_NO, name="Dark Mode")
 @Composable
 fun MainTopBarPreview(){
     MyApplicationTheme{

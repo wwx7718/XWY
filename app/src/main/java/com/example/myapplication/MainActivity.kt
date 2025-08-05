@@ -94,13 +94,13 @@ class MainActivity : ComponentActivity() {
                                 //.padding(17.dp)
                         //)
                         //FunctionGrid(modifier = Modifier.fillMaxWidth())
-                        Screen(modifier = Modifier.fillMaxWidth())
+                        //Screen(modifier = Modifier.fillMaxWidth())
                         //MenuScreen(modifier = Modifier.fillMaxWidth())
-                        //SimpleSearchBar(
-                            //modifier = Modifier.fillMaxWidth(),
-                            //onSearch = {},
-                            //searchResults = emptyList()
-                        //)
+                        SimpleSearchBar(
+                            modifier = Modifier.fillMaxWidth(),
+                            onSearch = {},
+                            searchResults = emptyList()
+                        )
                         //MySearchBar()
                         //MenuBarItem()
                         //MainTopBar()
@@ -594,6 +594,7 @@ fun SimpleSearchBar(
                     .size(28.dp)
                     .clickable {}
                     .height(56.dp)
+                    .align(Alignment.CenterVertically)
             )
 
             SearchBar(
@@ -641,6 +642,7 @@ fun SimpleSearchBar(
                     .size(20.dp)
                     .clickable {}
                     .height(56.dp)
+                    .align(Alignment.CenterVertically)
             )
         }
     } else{
@@ -655,7 +657,10 @@ fun SimpleSearchBar(
                 imageVector = Icons.Filled.ChevronLeft,
                 contentDescription = "Return",
                 //modifier=Modifier.offset(x=pxToDp(355.3f)),
-                tint = Color(0xFF808595)
+                tint = Color(0xFF808595),
+                modifier = Modifier
+                    .clickable { active=false }
+                    .align(Alignment.CenterVertically)
             )
 
         SearchBar(
@@ -707,6 +712,7 @@ fun SimpleSearchBar(
                         onSearch(query)
                         active = false
                     }
+                    .align(Alignment.CenterVertically)
             )
         }
     }
