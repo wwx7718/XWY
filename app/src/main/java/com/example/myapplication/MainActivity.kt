@@ -65,6 +65,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.graphics.ColorFilter
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -77,7 +78,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme (darkTheme = false){
+            MyApplicationTheme (darkTheme = true){
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier
@@ -93,7 +94,7 @@ class MainActivity : ComponentActivity() {
                                 //.padding(17.dp)
                         //)
                         //FunctionGrid(modifier = Modifier.fillMaxWidth())
-                        //Screen(modifier = Modifier.fillMaxWidth())
+                        Screen(modifier = Modifier.fillMaxWidth())
                         //MenuScreen(modifier = Modifier.fillMaxWidth())
                         //SimpleSearchBar(
                             //modifier = Modifier.fillMaxWidth(),
@@ -102,7 +103,7 @@ class MainActivity : ComponentActivity() {
                         //)
                         //MySearchBar()
                         //MenuBarItem()
-                        MainTopBar()
+                        //MainTopBar()
                     }
                 }
             }
@@ -221,14 +222,17 @@ fun FunctionItem(
                     contentDescription = label,
                     modifier = Modifier
                         .padding(top = 10.5.dp)
-                        .size(36.dp)
+                        .size(36.dp),
+                    colorFilter = ColorFilter.tint(Color(0xFF808595))
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
+            val darkTheme = true
             Text(
                 text = label,
                 fontSize = 13.sp,
-                color = Color(0xFF333333),
+                //color = Color(0xFF333333),
+                color = if (darkTheme) Color(0xFF9A9EAD) else Color(0xFF333333),
                 modifier=Modifier
                     //.width(60.dp)
                     .height(23.dp)

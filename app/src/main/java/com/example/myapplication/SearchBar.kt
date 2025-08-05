@@ -299,7 +299,7 @@ fun MySearchBar(
                 Spacer(modifier = Modifier.width(6.dp))
 
                 Image(
-                    painter = painterResource(id = R.drawable.moresearch),
+                    painter = painterResource(id = R.drawable.moreoption),
                     //imageVector = Icons.Filled.MoreVert,
                     contentDescription = "More",
                     contentScale = ContentScale.Fit,
@@ -417,7 +417,7 @@ fun MenuOptionBar(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    val isDarkTheme = isSystemInDarkTheme()
+                    val darkTheme = true
                     Text(
                         text = label,
                         //modifier=Modifier
@@ -432,7 +432,7 @@ fun MenuOptionBar(
                         //.clickable { onTabSelected(label) },
                         //color = if (isSelected) Color(0xFF333333) else Color(0xFF808595),
                         color = when{
-                            isSelected && isDarkTheme -> Color(0xFF508CEE)
+                            isSelected && darkTheme -> Color(0xFF508CEE)
                             isSelected -> Color(0xFF333333)
                             else -> Color(0xFF808595)
                         },
