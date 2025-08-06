@@ -95,15 +95,16 @@ class MainActivity : ComponentActivity() {
                         //)
                         //FunctionGrid(modifier = Modifier.fillMaxWidth())
                         //Screen(modifier = Modifier.fillMaxWidth())
-                        //MenuScreen(modifier = Modifier.fillMaxWidth())
-                        SimpleSearchBar(
-                            modifier = Modifier.fillMaxWidth(),
-                            onSearch = {},
-                            searchResults = emptyList()
-                        )
+                        MenuScreen(modifier = Modifier.fillMaxWidth())
+                        //SimpleSearchBar(
+                            //modifier = Modifier.fillMaxWidth(),
+                            //onSearch = {},
+                            //searchResults = emptyList()
+                        //)
                         //MySearchBar()
                         //MenuBarItem()
                         //MainTopBar()
+                        //FigureScreen()
                     }
                 }
             }
@@ -295,6 +296,8 @@ fun TopBar3(
     MiddleText:String,
     RightText:String,
     function:String,
+    selectedTab:String,
+    onTabSelected: (String) -> Unit,
     modifier:Modifier=Modifier
 ) {
     Column(
@@ -398,13 +401,14 @@ fun MenuItem1(
     ) {
         itemsIndexed(tabLabels) { index, label ->
             val isSelected = label == selectedTab
+            val darkTheme = false
             Button(
                 onClick = { onTabSelected(label) },
                 modifier = Modifier
                     .padding(start=if(index==0)12.dp else 0.dp),
                 colors = ButtonDefaults.buttonColors(
                     //containerColor = if (isSelected) Color(0xFF508CEE) else Color(0xFFF5F7FB),
-                    containerColor = Color(0xFFF5F7FB),
+                    containerColor = if (darkTheme) Color(0xFF232529) else Color(0xFFF5F7FB),
                     contentColor = if (isSelected) Color(0xFF508CEE) else Color(0xFF808595)
                 ),
                 shape = RoundedCornerShape(3.dp),
@@ -555,11 +559,13 @@ fun MenuScreen1(modifier: Modifier=Modifier){
     Column (modifier = Modifier
         .fillMaxSize()){
         //.verticalScroll(rememberScrollState())){
+        val tabList = listOf("热门行业", "热门概念", "资金热力图")
+        var selectedTab by rememberSaveable { mutableStateOf("") }
         TopBar2(
-            LeftText = "热门行业",
-            MiddleText = "热门概念",
-            RightText = "资金热力图",
-            function = "更多"
+            tabs = tabList,
+            function = "更多",
+            selectedTab = selectedTab,
+            onTabSelected = {selectedTab =it}
         )
         Menu()
         ContentItem()
@@ -587,15 +593,16 @@ fun SimpleSearchBar(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = "Profile",
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clickable {}
-                        //.height(56.dp)
+            Icon(
+                imageVector = Icons.Filled.AccountCircle,
+                contentDescription = "Profile",
+                modifier = Modifier
+                    .size(28.dp)
+                    .clickable {}
+                    //.height(56.dp)
                     .align(Alignment.CenterVertically)
-                )
+                    .offset(y=16.dp)
+            )
 
                 SearchBar(
                     modifier = Modifier
@@ -642,7 +649,8 @@ fun SimpleSearchBar(
                         .size(20.dp)
                         .clickable {}
                         .height(56.dp)
-                        //.align(Alignment.CenterVertically)
+                        .align(Alignment.CenterVertically)
+                        .offset(y=16.dp)
                 )
             }
     } else{
@@ -661,6 +669,7 @@ fun SimpleSearchBar(
                 modifier = Modifier
                     .clickable { active=false }
                     .align(Alignment.CenterVertically)
+                    .offset(y=16.dp)
             )
 
         SearchBar(
@@ -713,6 +722,7 @@ fun SimpleSearchBar(
                         active = false
                     }
                     .align(Alignment.CenterVertically)
+                    .offset(y=16.dp)
             )
         }
     }
@@ -865,11 +875,13 @@ fun ScreenPreview(){
 @Composable
 fun TopBar2Preview(){
     MyApplicationTheme{
+        val tabList = listOf("热门行业", "热门概念", "资金热力图")
+        var selectedTab by rememberSaveable { mutableStateOf("") }
         TopBar2(
-            LeftText = "热门行业",
-            MiddleText = "热门概念",
-            RightText = "资金热力图",
-            function = "更多"
+            tabs = tabList,
+            function = "更多",
+            selectedTab = selectedTab,
+            onTabSelected = {selectedTab =it}
         )
     }
 }
