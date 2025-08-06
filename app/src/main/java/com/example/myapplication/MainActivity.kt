@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme (darkTheme = true){
+            MyApplicationTheme (darkTheme = false){
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier
@@ -227,7 +227,7 @@ fun FunctionItem(
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
-            val darkTheme = true
+            val darkTheme = false
             Text(
                 text = label,
                 fontSize = 13.sp,
@@ -290,7 +290,7 @@ fun Screen(modifier: Modifier=Modifier){
 
 
 @Composable
-fun TopBar2(
+fun TopBar3(
     LeftText:String,
     MiddleText:String,
     RightText:String,
@@ -374,11 +374,11 @@ fun TopBar2(
 }
 
 @Composable
-fun Menu(){
+fun Menu1(){
     val tabLabels = listOf("涨幅", "涨速", "主力净流入", "主力净流速", "5日涨幅", "20日涨幅")
     var selectedTab by remember{mutableStateOf(tabLabels[0])}
 
-    MenuItem(
+    MenuItem1(
         tabLabels=tabLabels,
         selectedTab=selectedTab,
         onTabSelected= {selectedTab=it}
@@ -386,7 +386,7 @@ fun Menu(){
 }
 
 @Composable
-fun MenuItem(
+fun MenuItem1(
     tabLabels: List<String>,
     selectedTab: String,
     onTabSelected:(String) -> Unit
@@ -448,7 +448,7 @@ fun MenuItem(
 }
 
 @Composable
-fun Content(
+fun Content1(
     label1:String,
     number1:String,
     label2:String,
@@ -507,7 +507,7 @@ fun Content(
         }
     }
 
-data class Item(
+data class Items(
     val label1: String,
     val number1: String,
     val label2: String,
@@ -515,7 +515,7 @@ data class Item(
 )
 
 @Composable
-fun ContentList(items:List<Item>){
+fun ContentList1(items:List<Items>){
     LazyVerticalGrid (
         columns = GridCells.Fixed(3),
     modifier=Modifier
@@ -538,7 +538,7 @@ fun ContentList(items:List<Item>){
 }
 
 @Composable
-fun ContentItem(modifier: Modifier=Modifier){
+fun ContentItem1(modifier: Modifier=Modifier){
     val sampleDate= listOf(
         Item("元件", "+7.13%", "方邦股份", "+20.02%"),
         Item("地面兵装II", "+3.57%", "光电股份", "+10.02%"),
@@ -551,7 +551,7 @@ fun ContentItem(modifier: Modifier=Modifier){
 }
 
 @Composable
-fun MenuScreen(modifier: Modifier=Modifier){
+fun MenuScreen1(modifier: Modifier=Modifier){
     Column (modifier = Modifier
         .fillMaxSize()){
         //.verticalScroll(rememberScrollState())){
@@ -587,64 +587,64 @@ fun SimpleSearchBar(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Filled.AccountCircle,
-                contentDescription = "Profile",
-                modifier = Modifier
-                    .size(28.dp)
-                    .clickable {}
-                    .height(56.dp)
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = "Profile",
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable {}
+                        //.height(56.dp)
                     .align(Alignment.CenterVertically)
-            )
+                )
 
-            SearchBar(
-                modifier = Modifier
-                    .padding(9.dp)
-                    .semantics { isTraversalGroup = true }
-                    .height(56.dp)
-                    .weight(1f),
-                //.width(279.dp),
-                query = query,
-                onQueryChange = { query = it },
-                onSearch = {
-                    onSearch(query)
-                    active = false
-                },
-                active = active,
-                onActiveChange = { active = it },
-                placeholder = { Text("Search") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search Iocn"
-                    )
-                },
-                trailingIcon = {
-                    Text(
-                        text = "搜索",
-                        color = Color(0xFF508CEE),
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .clickable {
-                                onSearch(query)
-                                active = false
-                            }
-                    )
-                },
-                shape = RoundedCornerShape(4.dp)
-            ) {
+                SearchBar(
+                    modifier = Modifier
+                        .padding(horizontal = 9.dp)
+                        .semantics { isTraversalGroup = true }
+                        .height(56.dp)
+                        .weight(1f),
+                    //.width(279.dp),
+                    query = query,
+                    onQueryChange = { query = it },
+                    onSearch = {
+                        onSearch(query)
+                        active = false
+                    },
+                    active = active,
+                    onActiveChange = { active = it },
+                    placeholder = { Text("Search") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search Iocn"
+                        )
+                    },
+                    trailingIcon = {
+                        Text(
+                            text = "搜索",
+                            color = Color(0xFF508CEE),
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .clickable {
+                                    onSearch(query)
+                                    active = false
+                                }
+                        )
+                    },
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                }
+
+                Image(
+                    painter = painterResource(id = R.drawable.moreoption),
+                    contentDescription = "More",
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable {}
+                        .height(56.dp)
+                        //.align(Alignment.CenterVertically)
+                )
             }
-
-            Image(
-                painter = painterResource(id = R.drawable.moreoption),
-                contentDescription = "More",
-                modifier = Modifier
-                    .size(20.dp)
-                    .clickable {}
-                    .height(56.dp)
-                    .align(Alignment.CenterVertically)
-            )
-        }
     } else{
         Row(
             modifier = Modifier
