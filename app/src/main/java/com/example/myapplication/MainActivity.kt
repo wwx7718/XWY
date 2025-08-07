@@ -66,6 +66,10 @@ import androidx.compose.ui.text.style.TextAlign
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.NavHost
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -95,7 +99,7 @@ class MainActivity : ComponentActivity() {
                         //)
                         //FunctionGrid(modifier = Modifier.fillMaxWidth())
                         //Screen(modifier = Modifier.fillMaxWidth())
-                        MenuScreen(modifier = Modifier.fillMaxWidth())
+                        //MenuScreen(modifier = Modifier.fillMaxWidth())
                         //SimpleSearchBar(
                             //modifier = Modifier.fillMaxWidth(),
                             //onSearch = {},
@@ -105,6 +109,7 @@ class MainActivity : ComponentActivity() {
                         //MenuBarItem()
                         //MainTopBar()
                         //FigureScreen()
+                        ApplicationNavHost()
                     }
                 }
             }
@@ -112,13 +117,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+
 @Composable
 fun TopBar(
     name:String,
     function:String,
+    onFunctionClick:() -> Unit={},
     modifier:Modifier=Modifier
 ) {
     val colors=MaterialTheme.colorScheme
+    val navController=rememberNavController()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -151,24 +160,31 @@ fun TopBar(
             Spacer(modifier = Modifier.weight(1f))
 
             if (!function.isNullOrBlank()) {
-                Text(
-                    text = function,
-                    //modifier = Modifier.offset(x=324.dp),
-                    style = TextStyle(
-                        //fontFamily = pingFangFont,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        lineHeight = 23.sp,
-                        color = Color(0xFF808595)
+                Row(
+                    modifier = Modifier
+                        .clickable { onFunctionClick() },
+                        //.padding(end = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = function,
+                        //modifier = Modifier.offset(x=324.dp),
+                        style = TextStyle(
+                            //fontFamily = pingFangFont,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 14.sp,
+                            lineHeight = 23.sp,
+                            color = Color(0xFF808595)
+                        )
                     )
+                }
+                Icon(
+                    imageVector = Icons.Filled.ChevronRight,
+                    contentDescription = "Chevron Right",
+                    //modifier=Modifier.offset(x=pxToDp(355.3f)),
+                    tint = Color(0xFF808595)
                 )
             }
-            Icon(
-                imageVector = Icons.Filled.ChevronRight,
-                contentDescription = "Chevron Right",
-                //modifier=Modifier.offset(x=pxToDp(355.3f)),
-                tint = Color(0xFF808595)
-            )
         }
         HorizontalDivider(
             color=MaterialTheme.colorScheme.outline.copy(alpha=0.3f),
@@ -283,7 +299,9 @@ fun Screen(modifier: Modifier=Modifier){
             name = "数据中心",
             function = "更多",
             modifier = Modifier
-                .padding(17.dp)
+                .padding(17.dp),
+            onFunctionClick={
+            }
         )
         FunctionGrid()
     }
@@ -847,7 +865,9 @@ fun TopBarPreview() {
     MyApplicationTheme {
         TopBar(
             name="数据中心",
-            function="更多"
+            function="更多",
+            onFunctionClick={
+            }
         )
     }
 }
