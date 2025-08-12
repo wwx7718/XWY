@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.widget.Space
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,6 +46,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun TopBar2(
@@ -55,93 +65,112 @@ fun TopBar2(
     function:String,
     selectedTab:String,
     onTabSelected: (String) -> Unit,
+    onFunctionClick:() -> Unit={},
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
-        //.padding(vertical = 8.dp)
+            .height(44.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                //.width(375.dp)
                 .fillMaxWidth()
-                .height(44.dp)
-                .background(MaterialTheme.colorScheme.background),
-            verticalAlignment = Alignment.CenterVertically
-            //horizontalArrangement = Arrangement.spacedBy(25.dp)
+                .background(MaterialTheme.colorScheme.background)
+            //.padding(vertical = 8.dp)
         ) {
-            //val isLeftSelected = LeftText == selectedTab
-            //val isMiddleSelected = MiddleText == selectedTab
-            //val isRightSelected = RightText == selectedTab
-            tabs.forEachIndexed { index, tab ->
-                val isSelected = tab == selectedTab
-                val darkTheme = false
-                Column(
-                    modifier = Modifier
-                        .padding(start = if (index == 0) 12.dp else 0.dp)
-                        .clickable { onTabSelected(tab) },
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (!function.isNullOrBlank()) {
-                        Text(
-                            text = tab,
-                            modifier = Modifier
-                                .clickable { onTabSelected(tab) },
+            Row(
+                modifier = Modifier
+                    //.width(375.dp)
+                    .fillMaxWidth()
+                    //.height(44.dp)
+                    .background(MaterialTheme.colorScheme.background),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+                //horizontalArrangement = Arrangement.spacedBy(25.dp)
+            ) {
+                //val isLeftSelected = LeftText == selectedTab
+                //val isMiddleSelected = MiddleText == selectedTab
+                //val isRightSelected = RightText == selectedTab
+                tabs.forEachIndexed { index, tab ->
+                    val isSelected = tab == selectedTab
+                    val darkTheme = false
+                    Column(
+                        modifier = Modifier
+                            .padding(start = if (index == 0) 12.dp else 0.dp)
+                            .clickable { onTabSelected(tab) },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        if (!function.isNullOrBlank()) {
+                            Text(
+                                text = tab,
+                                modifier = Modifier
+                                    .clickable { onTabSelected(tab) },
                                 //.offset(x = 12.dp),
                                 //.padding(start = if (index == 0) 12.dp else 0.dp),
-                            style = TextStyle(
-                                //fontFamily = pingFangFont,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 17.sp,
-                                lineHeight = 13.5.sp,
-                                //color = Color(0xFF808595)
-                                color = when {
-                                    isSelected && darkTheme -> Color(0xFF508CEE)
-                                    isSelected -> Color(0xFF333333)
-                                    else -> Color(0xFF808595)
-                                }
+                                style = TextStyle(
+                                    //fontFamily = pingFangFont,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 17.sp,
+                                    lineHeight = 13.5.sp,
+                                    //color = Color(0xFF808595)
+                                    color = when {
+                                        isSelected && darkTheme -> Color(0xFF508CEE)
+                                        isSelected -> Color(0xFF333333)
+                                        else -> Color(0xFF808595)
+                                    }
+                                )
                             )
-                        )
-                        Spacer(modifier = Modifier.height(11.dp))
-                        if (isSelected) {
-                            //Spacer(modifier=Modifier.height(9.dp))
-                            Box(
-                                modifier = Modifier
-                                    .height(3.dp)
-                                    .width(54.dp)
-                                    .background(Color(0xFF508CEE))
-                            )
+                            Spacer(modifier = Modifier.height(5.dp))
+                            if (isSelected) {
+                                //Spacer(modifier=Modifier.height(4.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .height(3.dp)
+                                        .width(54.dp)
+                                        .background(Color(0xFF508CEE))
+                                        .padding(bottom = 0.5.dp)
+                                )
+                            }
                         }
                     }
-                }
                     Spacer(modifier = Modifier.width(25.dp))
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = function,
-                    style = TextStyle(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        lineHeight = 23.sp,
-                        color = Color(0xFF808595)
+                //Spacer(modifier = Modifier.weight(1f))
+                Row(
+                    modifier = Modifier
+                        .height(44.dp)
+                        .clickable { onFunctionClick() }
+                        .padding(end = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = function,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 14.sp,
+                            //lineHeight = 23.sp,
+                            color = Color(0xFF808595)
+                        )
                     )
-                )
-                Icon(
-                    imageVector = Icons.Filled.ChevronRight,
-                    contentDescription = "Chevron Right",
-                    //modifier=Modifier.offset(x=pxToDp(355.3f)),
-                    tint = Color(0xFF808595)
-                )
+                    Icon(
+                        imageVector = Icons.Filled.ChevronRight,
+                        contentDescription = "Chevron Right",
+                        //modifier=Modifier.offset(x=pxToDp(355.3f)),
+                        tint = Color(0xFF808595)
+                    )
+                }
             }
+
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                 thickness = 0.5.dp
             )
         }
     }
+}
 
     @Composable
     fun Menu() {
@@ -163,7 +192,8 @@ fun TopBar2(
     ) {
         LazyRow(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(50.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             itemsIndexed(tabLabels) { index, label ->
@@ -300,12 +330,34 @@ fun TopBar2(
         val number2: String
     )
 
+class ContentViewModel : ViewModel(){
+    private val _items= mutableStateOf<List<Item>>(emptyList())
+    val items:State<List<Item>> = _items
+
+    fun loadItems() {
+        viewModelScope.launch {
+            delay(1000)
+
+            val fetchedItems = listOf(
+                Item("元件", "+7.13%", "方邦股份", "+20.02%"),
+                Item("地面兵装II", "+3.57%", "光电股份", "+10.02%"),
+                Item("化学制药", "+3.52%", "尔康制药", "+14.63%"),
+                Item("保险II", "+3.40%", "新华保险", "+4.86%"),
+                Item("塑料", "+2.96%", "上邦新材", "+18.32%"),
+                Item("影视院线", "+2.78%", "幸福蓝海", "+20.00%")
+            )
+            _items.value=fetchedItems
+        }
+    }
+}
+
     @Composable
     fun ContentList(items: List<Item>) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxWidth()
+                .height(180.dp)
                 .background(MaterialTheme.colorScheme.background),
             contentPadding = PaddingValues(9.dp),
             horizontalArrangement = Arrangement.Center,
@@ -335,14 +387,25 @@ fun TopBar2(
         )
         ContentList(items = sampleDate)
     }
+//@Composable
+    //fun ContentItem(viewModel:ContentViewModel = viewModel()){
+        //val items by viewModel.items
+        //LaunchedEffect(Unit){
+            //viewModel.loadItems()
+        //}
+        //ContentList(items=items)
+    //}
 
     @Composable
-    fun MenuScreen(modifier: Modifier = Modifier) {
+    fun MenuScreen(
+        modifier: Modifier = Modifier,
+        navController: NavHostController?= null) {
         var selectedTab by rememberSaveable { mutableStateOf("热门行业") }
         val tabList = listOf("热门行业", "热门概念", "资金热力图")
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .height(280.dp)
         ) {
             //.verticalScroll(rememberScrollState())){
             TopBar2(
@@ -352,7 +415,8 @@ fun TopBar2(
                 tabs = tabList,
                 function = "更多",
                 selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it }
+                onTabSelected = { selectedTab = it },
+                onFunctionClick = {navController?.navigate("placeholder")}
             )
             Menu()
             ContentItem()

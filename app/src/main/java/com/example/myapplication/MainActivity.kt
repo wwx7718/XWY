@@ -70,6 +70,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
+import androidx.navigation.NavHostController
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -110,6 +111,7 @@ class MainActivity : ComponentActivity() {
                         //MainTopBar()
                         //FigureScreen()
                         ApplicationNavHost()
+                        //HomeScreen()
                     }
                 }
             }
@@ -856,6 +858,24 @@ fun MenuBar(
     }
 }
 
+//@Composable
+//fun HomeScreen(
+    //navController: NavHostController,
+    //onNavigateToSearch:() -> Unit
+//){
+    //val scrollState= rememberScrollState()
+    //Column(
+        //modifier=Modifier
+            //.fillMaxSize()
+            //.verticalScroll(scrollState)
+    //){
+        //MySearchBar(onNavigateToSearch=onNavigateToSearch, onSearch = {})
+        //MenuOption()
+        //FigureScreen(navController=navController)
+        //MenuScreen(navController=navController)
+    //}
+//}
+
 
 
 @Preview(showBackground = true)
@@ -901,7 +921,8 @@ fun TopBar2Preview(){
             tabs = tabList,
             function = "更多",
             selectedTab = selectedTab,
-            onTabSelected = {selectedTab =it}
+            onTabSelected = {selectedTab =it},
+            onFunctionClick = {}
         )
     }
 }
@@ -953,4 +974,12 @@ fun MenuBarItemPreview(){
         MenuBarItem()
     }
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview(){
+    //MyApplicationTheme{
+        //HomeScreen(navController=navController)
+    //}
+//}
 

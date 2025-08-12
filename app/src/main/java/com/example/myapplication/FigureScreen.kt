@@ -71,18 +71,48 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
+
+
+@Composable
+fun AllScreen(
+    navController:NavHostController,
+    onNavigateToSearch:() -> Unit={}){
+    //val scrollState= rememberScrollState()
+    var isSearchActive by remember { mutableStateOf(false) }
+    LazyColumn(
+        modifier=Modifier
+            .fillMaxSize()
+            //.verticalScroll(scrollState)
+    ){
+        item{MySearchBar(onNavigateToSearch={isSearchActive = true
+            navController.navigate("search")}, onSearch = {})}
+        item{if (isSearchActive){MenuOption2()} else{MenuOption()} }
+        item{FigureScreen(navController=navController)}
+        item{MenuScreen(navController=navController)}
+    }
+}
 
 
 @Composable
 fun ApplicationNavHost() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "figure") {
-        composable("figure") {
-            FigureScreen(navController=navController)
+    NavHost(navController = navController, startDestination = "all") {
+        composable("all") {
+            AllScreen(navController=navController)
         }
+        //composable("menu"){
+            //MenuScreen(navController=navController)
+        //}
         composable("placeholder") {
             PlaceholderScreen()
+        }
+        composable("search"){
+            SearchScreen(navController=navController, onSearch = {})
         }
     }
 }
@@ -239,26 +269,49 @@ fun FunctionItems(
     }
 }
 
+class MyViewModel:ViewModel(){
+    private val _labels = MutableStateFlow<List<Pair<String, String>>>(emptyList())
+    var labels:StateFlow<List<Pair<String, String>>> = _labels
+
+    fun fetchLabels(): List<Pair<String, String>>{
+        val labels=listOf(
+            "account" to "开户",
+            "newbonds" to "新股新债",
+            "stock" to "选股",
+            "industrialchain" to "产业链",
+            "longhubang" to "龙虎榜",
+            "decision" to "决策商城",
+            "performance" to "业绩大全",
+            "inquire" to "机构调研",
+            "stockmarket" to "次新股",
+            "more" to "更多",
+        )
+        return labels.shuffled()
+    }
+}
+
 
 @Composable
-fun FunctionGrid1(modifier: Modifier=Modifier){
-    val labels=listOf(
-        Pair("account", "开户"),
-        Pair("newbonds","新股新债"),
-        Pair("stock","选股"),
-        Pair("industrialchain", "产业链"),
-        Pair("longhubang", "龙虎榜"),
-        Pair("decision", "决策商城"),
-        Pair("performance", "业绩大全"),
-        Pair("inquire", "机构调研"),
-        Pair("stockmarket", "次新股"),
-        Pair("more", "更多"),
-    )
+fun FunctionGrid1(modifier: Modifier=Modifier,
+                  labels:List<Pair<String,String>>){
+    //val labels=listOf(
+        //Pair("account", "开户"),
+        //Pair("newbonds","新股新债"),
+        //Pair("stock","选股"),
+        //Pair("industrialchain", "产业链"),
+        //Pair("longhubang", "龙虎榜"),
+        //Pair("decision", "决策商城"),
+        //Pair("performance", "业绩大全"),
+        //Pair("inquire", "机构调研"),
+        //Pair("stockmarket", "次新股"),
+        //Pair("more", "更多"),
+    //)
     LazyVerticalGrid(
         //columns = GridCells.Adaptive(minSize=60.dp),
         columns = GridCells.Fixed(5),
         modifier=Modifier
             .fillMaxWidth()
+            .height(180.dp)
             .background(MaterialTheme.colorScheme.background),
         horizontalArrangement = Arrangement.Center,
         verticalArrangement = Arrangement.Center
@@ -275,7 +328,8 @@ fun FigureScreen(
     modifier:Modifier=Modifier,
     navController:NavHostController?= null){
     Column (modifier = Modifier
-        .fillMaxSize()){
+        .fillMaxWidth()
+        .height(230.dp)){
         //.verticalScroll(rememberScrollState())){
         TopBar(
             name = "数据中心",
@@ -307,7 +361,20 @@ fun TopBar1Preview() {
 @Composable
 fun FunctionGrid1Preview(){
     MyApplicationTheme{
-        FunctionGrid1()
+        FunctionGrid1(
+            labels = listOf(
+                "account" to "开户",
+                "newbonds" to "新股新债",
+                "stock" to "选股",
+                "industrialchain" to "产业链",
+                "longhubang" to "龙虎榜",
+                "decision" to "决策商城",
+                "performance" to "业绩大全",
+                "inquire" to "机构调研",
+                "stockmarket" to "次新股",
+                "more" to "更多",
+            )
+        )
     }
 }
 
@@ -317,5 +384,13 @@ fun FunctionGrid1Preview(){
 fun FigureScreenPreview(){
     MyApplicationTheme{
         FigureScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AllScreenPreview(){
+    MyApplicationTheme{
+        AllScreen(navController=rememberNavController())
     }
 }

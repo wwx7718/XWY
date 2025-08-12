@@ -73,6 +73,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 
 //import androidx.compose.foundation.layout.Arrangement
@@ -103,7 +105,7 @@ class SearchBar : ComponentActivity() {
                         //FunctionGrid(modifier = Modifier.fillMaxWidth())
                         //Screen(modifier = Modifier.fillMaxWidth())
                         //MenuScreen(modifier = Modifier.fillMaxWidth())
-                        MySearchBar()
+                        //MySearchBar()
                     }
                 }
             }
@@ -263,11 +265,16 @@ fun CustomSearchBar(
 
 @Composable
 fun MySearchBar(
-    modifier: Modifier=Modifier
+    modifier: Modifier=Modifier,
+    onNavigateToSearch:() -> Unit={},
+    onSearch:() -> Unit,
+    navController: NavHostController?= null
 ) {
     var query by remember { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
     val colors=MaterialTheme.colorScheme
+    val darkTheme = false
+    val backgroundColor = if (darkTheme) {Color(0xFF232529)} else {Color(0xFFF5F7FB)}
 
     Column() {
         if (!active) {
@@ -290,18 +297,61 @@ fun MySearchBar(
                     //.height(56.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                CustomSearchBar(
-                    query = query,
-                    onQueryChange = { query = it },
-                    onSearch = {active =false},
-                    active = active,
-                    onActiveChange = {active=it},
+                Box(
                     modifier = Modifier
                         .weight(1f)
                         .height(32.dp)
-                        .padding(end = 44.dp)
-                        .then(Modifier.widthIn(max = 279.dp))
-                )
+                        .background(backgroundColor),
+                        //.clickable { onNavigateToSearch()},
+                    contentAlignment = Alignment.CenterStart
+                ){
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search Iocn",
+                            modifier = Modifier.padding(horizontal = 10.dp)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .clickable { onNavigateToSearch() },
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            if (query.isEmpty()) {
+                                Text(
+                                    text = "Search",
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF9A9EAD)
+                                )
+                            }
+
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "搜索",
+                            color = Color(0xFF508CEE),
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .clickable { onSearch() }
+                                .padding(horizontal = 10.dp)
+                        )
+                    }
+                }
+                //CustomSearchBar(
+                    //query = query,
+                    //onQueryChange = { query = it },
+                    //onSearch = {active =false},
+                    //active = active,
+                    //onActiveChange = {active=it},
+                    //modifier = Modifier
+                        //.weight(1f)
+                        //.height(32.dp)
+                        //.padding(end = 44.dp)
+                        //.then(Modifier.widthIn(max = 279.dp))
+                //)
                 Spacer(modifier = Modifier.width(6.dp))
 
                 Image(
@@ -390,6 +440,139 @@ fun MenuOption(){
 }
 
 @Composable
+fun MenuOption2(){
+    val tabLabels=listOf(
+        "综合",
+        "股票",
+        "资讯",
+        "基金",
+        "用户",
+        "社区",
+        "课程",
+        "直播"
+    )
+    var selectedTab by remember{ mutableStateOf(tabLabels[0])}
+
+    MenuOptionBar2(
+        tabLabels=tabLabels,
+        selectedTab=selectedTab,
+        onTabSelected={selectedTab=it}
+    )
+}
+
+@Composable
+fun SearchScreen(
+    navController:NavController,
+    onSearch: () -> Unit
+){
+    var query by remember{ mutableStateOf("") }
+    var active by rememberSaveable { mutableStateOf(true) }
+    Row(
+        modifier = Modifier
+            .height(64.dp)
+            //.wrapContentHeight()
+            .padding(12.dp)
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Filled.ChevronLeft,
+            contentDescription = "Return",
+            //modifier=Modifier.offset(x=pxToDp(355.3f)),
+            tint = Color(0xFF808595),
+            modifier=Modifier
+                .clickable { navController.popBackStack() }
+        )
+        Spacer(modifier = Modifier.width(2.dp))
+        CustomSearchBar(
+            query = query,
+            onQueryChange = { query = it },
+            onSearch = {active=true},
+            active = active,
+            onActiveChange = {active=it},
+            modifier = Modifier
+                .weight(1f)
+                .height(32.dp)
+            //.padding(end=44.dp)
+        )
+        Spacer(modifier = Modifier.width(1.dp))
+
+        Text(
+            text = "搜索",
+            color = Color(0xFF508CEE),
+            fontSize = 14.sp,
+            modifier = Modifier
+                //.widthIn(min=40.dp)
+                //.wrapContentHeight()
+                .clickable {onSearch()}
+            //.padding(horizontal = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun MenuOptionBar2(
+    tabLabels: List<String>,
+    selectedTab: String,
+    onTabSelected:(String) -> Unit
+){
+    val itemHeight=37.dp
+    val lineHeight=3.dp
+    val colors=MaterialTheme.colorScheme
+    Row(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        LazyRow(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(24.dp)
+        ){
+            itemsIndexed(tabLabels) { index, label ->
+                val isSelected = label == selectedTab
+                val isLast = index == tabLabels.lastIndex
+                Column(
+                    modifier = Modifier
+                        .padding(start = if (index == 0) 12.dp else 0.dp)
+                        .padding(end = if (isLast) 12.dp else 0.dp)
+                        .clickable { onTabSelected(label) },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    val darkTheme = true
+                    Text(
+                        text = label,
+                        //modifier=Modifier
+                        //.padding(top=6.dp, bottom = 12.dp),
+                        modifier = Modifier.padding(
+                            top = if (isSelected) 5.dp else 6.dp,
+                            bottom = if (isSelected) 8.dp else 9.dp
+                        ),
+                        color = when{
+                            isSelected && darkTheme -> Color(0xFF508CEE)
+                            isSelected -> Color(0xFF333333)
+                            else -> Color(0xFF808595)
+                        },
+                        fontSize = 16.sp
+                    )
+                    if (isSelected) {
+                        //Spacer(modifier=Modifier.height(9.dp))
+                        Box(
+                            modifier = Modifier
+                                .height(3.dp)
+                                .width(24.dp)
+                                .background(Color(0xFF508CEE))
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun MenuOptionBar(
     tabLabels: List<String>,
     selectedTab: String,
@@ -475,30 +658,52 @@ fun MenuOptionBar(
 }
 
 @Composable
-fun MainTopBar(){
-    Scaffold(
-        topBar = {
+fun MainTopBar(
+    navController: NavController?= null
+){
+    //Scaffold(
+        //topBar = {
             Column (
                 modifier = Modifier
                     .height(130.dp)
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
             ){
-                MySearchBar()
+                MySearchBar(
+                    onNavigateToSearch = {navController?.navigate("search")},
+                    onSearch = {}
+                )
                 MenuOption()
             }
         }
-    ){
-        innerPadding ->
-    }
-}
+    //){
+        //innerPadding ->@Composable
+//fun MainTopBar(
+//    navController: NavController?= null
+//){
+//    //Scaffold(
+//        //topBar = {
+//            Column (
+//                modifier = Modifier
+//                    .height(130.dp)
+//                    .fillMaxWidth()
+//                    .background(MaterialTheme.colorScheme.background)
+//            ){
+//                MySearchBar(
+//                    onNavigateToSearch = {navController?.navigate("search")}
+//                )
+//                MenuOption()
+//            }
+//        }
+    //}
+//}
 
 
 @Preview(showBackground = true)
 @Composable
 fun MySearchBarPreview() {
     MyApplicationTheme {
-        MySearchBar()
+        MySearchBar(onSearch = {})
     }
 }
 
@@ -516,5 +721,13 @@ fun MenuOptionPreview(){
 fun MainTopBarPreview(){
     MyApplicationTheme{
         MainTopBar()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuOption2Preview(){
+    MyApplicationTheme{
+        MenuOption2()
     }
 }
