@@ -65,6 +65,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+//import androidx.compose.foundation.layout.FlowRowScopeInstance.weight
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -83,16 +84,23 @@ fun AllScreen(
     navController:NavHostController,
     onNavigateToSearch:() -> Unit={}){
     //val scrollState= rememberScrollState()
-    LazyColumn(
+    Column(
         modifier=Modifier
             .fillMaxSize()
             //.verticalScroll(scrollState)
-    ){
-        item{MySearchBar(onNavigateToSearch={ navController.navigate("search")}, onSearch = {})}
-        item{MenuOption()}
-        item{FigureScreen(navController=navController)}
-        item{MenuScreen(navController=navController)}
-        item{FigureScreen(navController=navController)}
+    ) {
+            MySearchBar(
+                onNavigateToSearch = { navController.navigate("search") },
+                onSearch = {})
+            MenuOption()
+
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+        ) {
+            item { FigureScreen(navController = navController) }
+            item { MenuScreen(navController = navController) }
+            item { FigureScreen(navController = navController) }
+        }
     }
 }
 
@@ -148,7 +156,8 @@ fun TopBar1(
                 .fillMaxWidth()
                 .height(44.dp)
                 .background(MaterialTheme.colorScheme.background),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             if (!function.isNullOrBlank()) {
                 Text(
@@ -164,7 +173,7 @@ fun TopBar1(
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            //Spacer(modifier = Modifier.weight(1f))
 
                     //if (!function.isNullOrBlank()) {
                         Row(
