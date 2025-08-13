@@ -55,6 +55,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Retrofit
+import retrofit2.http.GET
 
 @Composable
 fun TopBar2(
@@ -330,26 +333,60 @@ fun TopBar2(
         val number2: String
     )
 
-class ContentViewModel : ViewModel(){
+//class ContentViewModel : ViewModel(){
+    //private val _items= mutableStateOf<List<Item>>(emptyList())
+    //val items:State<List<Item>> = _items
+
+    //fun loadItems() {
+        //viewModelScope.launch {
+            //delay(1000)
+
+            //val fetchedItems = listOf(
+                //Item("元件", "+7.13%", "方邦股份", "+20.02%"),
+                //Item("地面兵装II", "+3.57%", "光电股份", "+10.02%"),
+                //Item("化学制药", "+3.52%", "尔康制药", "+14.63%"),
+                //Item("保险II", "+3.40%", "新华保险", "+4.86%"),
+                //Item("塑料", "+2.96%", "上邦新材", "+18.32%"),
+                //Item("影视院线", "+2.78%", "幸福蓝海", "+20.00%")
+            //)
+            //_items.value=fetchedItems
+        //}
+    //}
+//}
+
+data class ItemResponse(
+    val label1: String,
+    val number1: String,
+    val label2: String,
+    val number2: String
+)
+interface ItemApi{
+    @GET("items")
+    suspend fun getItems():List<ItemResponse>
+}
+
+class ContentViewModel:ViewModel(){
     private val _items= mutableStateOf<List<Item>>(emptyList())
     val items:State<List<Item>> = _items
+    private val api=Retrofit.Builder()
+        .baseUrl("https://example.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ItemApi::class.java)
 
-    fun loadItems() {
-        viewModelScope.launch {
-            delay(1000)
-
-            val fetchedItems = listOf(
-                Item("元件", "+7.13%", "方邦股份", "+20.02%"),
-                Item("地面兵装II", "+3.57%", "光电股份", "+10.02%"),
-                Item("化学制药", "+3.52%", "尔康制药", "+14.63%"),
-                Item("保险II", "+3.40%", "新华保险", "+4.86%"),
-                Item("塑料", "+2.96%", "上邦新材", "+18.32%"),
-                Item("影视院线", "+2.78%", "幸福蓝海", "+20.00%")
-            )
-            _items.value=fetchedItems
+    fun loadItems(){
+        viewModelScope.launch{
+            try{
+                val response=api.getItems()
+                _items.value=response.map{Item(it.label1, it.number1, it.label2, it.number2)}
+            }catch(e:Exception){
+                _items.value= emptyList()
+            }
         }
     }
+
 }
+
 
     @Composable
     fun ContentList(items: List<Item>) {

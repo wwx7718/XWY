@@ -76,7 +76,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Retrofit
+import retrofit2.http.GET
 
 
 @Composable
@@ -277,25 +279,43 @@ fun FunctionItems(
     }
 }
 
-class MyViewModel:ViewModel(){
-    private val _labels = MutableStateFlow<List<Pair<String, String>>>(emptyList())
-    var labels:StateFlow<List<Pair<String, String>>> = _labels
 
-    fun fetchLabels(): List<Pair<String, String>>{
-        val labels=listOf(
-            "account" to "开户",
-            "newbonds" to "新股新债",
-            "stock" to "选股",
-            "industrialchain" to "产业链",
-            "longhubang" to "龙虎榜",
-            "decision" to "决策商城",
-            "performance" to "业绩大全",
-            "inquire" to "机构调研",
-            "stockmarket" to "次新股",
-            "more" to "更多",
-        )
-        return labels.shuffled()
-    }
+//class MyViewModel:ViewModel(){
+    //private val _labels = MutableStateFlow<List<Pair<String, String>>>(emptyList())
+    //var labels:StateFlow<List<Pair<String, String>>> = _labels
+
+    //fun fetchLabels(): List<Pair<String, String>>{
+        //val labels=listOf(
+            //"account" to "开户",
+            //"newbonds" to "新股新债",
+            //"stock" to "选股",
+            //"industrialchain" to "产业链",
+            //"longhubang" to "龙虎榜",
+            //"decision" to "决策商城",
+            //"performance" to "业绩大全",
+            //"inquire" to "机构调研",
+            //"stockmarket" to "次新股",
+            //"more" to "更多",
+        //)
+        //return labels.shuffled()
+    //}
+//}
+
+interface LabelApi{
+    @GET("labels")
+    suspend fun fetchLabels():List<LabelResponse>
+}
+data class LabelResponse(
+    val imagePath:String,
+    val label:String
+)
+
+class MyViewModel:ViewModel(){
+    private val api=Retrofit.Builder()
+        .baseUrl("https://example.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(LabelApi::class.java)
 }
 
 
