@@ -464,50 +464,57 @@ fun MenuOption2(){
 fun SearchScreen(
     navController:NavController,
     onSearch: () -> Unit
-){
-    var query by remember{ mutableStateOf("") }
+) {
+    var query by remember { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(true) }
-    Row(
+    Column(
         modifier = Modifier
-            .height(64.dp)
-            //.wrapContentHeight()
-            .padding(12.dp)
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background),
-        verticalAlignment = Alignment.CenterVertically
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        Icon(
-            imageVector = Icons.Filled.ChevronLeft,
-            contentDescription = "Return",
-            //modifier=Modifier.offset(x=pxToDp(355.3f)),
-            tint = Color(0xFF808595),
-            modifier=Modifier
-                .clickable { navController.popBackStack() }
-        )
-        Spacer(modifier = Modifier.width(2.dp))
-        CustomSearchBar(
-            query = query,
-            onQueryChange = { query = it },
-            onSearch = {active=true},
-            active = active,
-            onActiveChange = {active=it},
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .height(32.dp)
-            //.padding(end=44.dp)
-        )
-        Spacer(modifier = Modifier.width(1.dp))
-
-        Text(
-            text = "搜索",
-            color = Color(0xFF508CEE),
-            fontSize = 14.sp,
-            modifier = Modifier
-                //.widthIn(min=40.dp)
+                .height(64.dp)
                 //.wrapContentHeight()
-                .clickable {onSearch()}
-            //.padding(horizontal = 2.dp)
-        )
+                .padding(12.dp)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ChevronLeft,
+                contentDescription = "Return",
+                //modifier=Modifier.offset(x=pxToDp(355.3f)),
+                tint = Color(0xFF808595),
+                modifier = Modifier
+                    .clickable { navController.popBackStack() }
+            )
+            Spacer(modifier = Modifier.width(2.dp))
+            CustomSearchBar(
+                query = query,
+                onQueryChange = { query = it },
+                onSearch = { active = true },
+                active = active,
+                onActiveChange = { active = it },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(32.dp)
+                //.padding(end=44.dp)
+            )
+            Spacer(modifier = Modifier.width(1.dp))
+
+            Text(
+                text = "搜索",
+                color = Color(0xFF508CEE),
+                fontSize = 14.sp,
+                modifier = Modifier
+                    //.widthIn(min=40.dp)
+                    //.wrapContentHeight()
+                    .clickable { onSearch() }
+                //.padding(horizontal = 2.dp)
+            )
+        }
+        MenuOption2()
     }
 }
 

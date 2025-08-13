@@ -83,17 +83,16 @@ fun AllScreen(
     navController:NavHostController,
     onNavigateToSearch:() -> Unit={}){
     //val scrollState= rememberScrollState()
-    var isSearchActive by remember { mutableStateOf(false) }
     LazyColumn(
         modifier=Modifier
             .fillMaxSize()
             //.verticalScroll(scrollState)
     ){
-        item{MySearchBar(onNavigateToSearch={isSearchActive = true
-            navController.navigate("search")}, onSearch = {})}
-        item{if (isSearchActive){MenuOption2()} else{MenuOption()} }
+        item{MySearchBar(onNavigateToSearch={ navController.navigate("search")}, onSearch = {})}
+        item{MenuOption()}
         item{FigureScreen(navController=navController)}
         item{MenuScreen(navController=navController)}
+        item{FigureScreen(navController=navController)}
     }
 }
 
@@ -167,7 +166,7 @@ fun TopBar1(
 
             Spacer(modifier = Modifier.weight(1f))
 
-                    if (!function.isNullOrBlank()) {
+                    //if (!function.isNullOrBlank()) {
                         Row(
                             modifier = Modifier
                                 .clickable { onFunctionClick() }
@@ -193,7 +192,7 @@ fun TopBar1(
                                 tint = Color(0xFF808595)
                                 //modifier = Modifier.padding(end=12.dp)
                             )
-                        }
+                        //}
                     }
                 }
         HorizontalDivider(
