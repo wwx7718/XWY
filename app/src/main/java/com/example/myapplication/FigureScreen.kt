@@ -103,7 +103,7 @@ fun AllScreen(
             item { SelectGrid(navController = navController) }
             item { FigureScreen(navController = navController) }
             item { MenuScreen(navController = navController) }
-            item { FigureScreen(navController = navController) }
+            //item { FigureScreen(navController = navController) }
         }
     }
 }
