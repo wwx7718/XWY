@@ -124,7 +124,7 @@ fun SelectGrid(
                     items(page0Items) { selectItem ->
                         SelectItems(
                             item = selectItem,
-                            //navController = navController,
+                            navController = navController,
                             label = selectItem.label,
                             number = selectItem.number,
                             level = selectItem.level,
@@ -213,7 +213,7 @@ fun SelectGrid(
                         } else {
                             SelectItems(
                                 item = selectItem,
-                                //navController = navController,
+                                navController = navController,
                                 label = selectItem.label,
                                 number = selectItem.number,
                                 level = selectItem.level,
@@ -255,7 +255,7 @@ fun SelectGrid(
 fun SelectItems(
     item:SelectItem,
     modifier: Modifier=Modifier,
-    //navController: NavController?= null,
+    navController: NavController?= null,
     label:String,
     number:String,
     level:String,
@@ -268,7 +268,7 @@ fun SelectItems(
                 //.wrapContentHeight()
                 .width(119.dp)
                 .height(90.dp)
-                .clickable {  }
+                .clickable { navController?.navigate("placeholder") }
                 .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Center
         ) {
