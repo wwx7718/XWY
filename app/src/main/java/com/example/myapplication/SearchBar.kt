@@ -120,6 +120,7 @@ fun CustomSearchBar(
     onQueryChange:(String)->Unit,
     active:Boolean,
     onActiveChange:(Boolean)->Unit,
+    onFunctionClick:()-> Unit={},
     modifier: Modifier=Modifier
 ) {
     //var query by rememberSaveable { mutableStateOf("") }
@@ -249,7 +250,7 @@ fun CustomSearchBar(
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .clickable {
-                            onSearch()
+                            onFunctionClick()
                             onActiveChange(true)
                         }
                         .requiredSize(24.dp)
@@ -292,7 +293,7 @@ fun MySearchBar(
                     contentDescription = "Profile",
                     modifier = Modifier
                         .size(28.dp)
-                        .clickable {}
+                        .clickable {navController?.navigate("placeholder")}
                         .height(32.dp)
                     //.height(56.dp)
                 )
@@ -415,7 +416,9 @@ fun MySearchBar(
 }
 
 @Composable
-fun MenuOption(){
+fun MenuOption(
+    navController:NavHostController?=null
+){
     val tabLabels=listOf(
         "A股",
         "环球",
@@ -435,7 +438,8 @@ fun MenuOption(){
     MenuOptionBar(
         tabLabels=tabLabels,
         selectedTab=selectedTab,
-        onTabSelected={selectedTab=it}
+        onTabSelected={selectedTab=it},
+        onFunctionClick={navController?.navigate("placeholder")}
     )
 }
 
@@ -496,6 +500,7 @@ fun SearchScreen(
                 onSearch = { active = true },
                 active = active,
                 onActiveChange = { active = it },
+                onFunctionClick = {navController.navigate("placeholder")},
                 modifier = Modifier
                     .weight(1f)
                     .height(32.dp)
@@ -583,7 +588,8 @@ fun MenuOptionBar2(
 fun MenuOptionBar(
     tabLabels: List<String>,
     selectedTab: String,
-    onTabSelected:(String) -> Unit
+    onTabSelected:(String) -> Unit,
+    onFunctionClick:()-> Unit={}
 ){
     val itemHeight = 34.dp
     val lineHeight = 3.dp
@@ -649,7 +655,7 @@ fun MenuOptionBar(
             }
         }
         IconButton(
-            onClick = {},
+            onClick = {onFunctionClick()},
             modifier = Modifier
                 .padding(end = 12.dp)
                 .size(30.dp)

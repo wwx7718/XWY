@@ -93,12 +93,14 @@ fun AllScreen(
     ) {
             MySearchBar(
                 onNavigateToSearch = { navController.navigate("search") },
-                onSearch = {})
-            MenuOption()
+                onSearch = {},
+                navController = navController)
+            MenuOption(navController = navController)
 
         LazyColumn(
             modifier = Modifier.weight(1f)
         ) {
+            item { SelectGrid(navController = navController) }
             item { FigureScreen(navController = navController) }
             item { MenuScreen(navController = navController) }
             item { FigureScreen(navController = navController) }
